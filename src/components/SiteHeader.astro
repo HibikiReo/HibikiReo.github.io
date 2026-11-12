@@ -1,0 +1,21 @@
+---
+import { useLocale } from '../i18n';
+import Icon from './Icon.astro';
+interface Props { current?: 'home' | 'notes'; }
+const { current = 'home' } = Astro.props;
+const { t, href, alternate } = useLocale(Astro.url);
+const home = current === 'home';
+// Sections of the home page are in-page anchors there and full links elsewhere.
+const onHome = (hash: string) => home ? hash : href(`/${hash}`);
+---
+<header class="site-header">
+  <a class="brand" href={onHome('#top')} aria-label={t("Hibiki 首页", "Hibiki home")}><span class="brand-wordmark">h.</span><span class="brand-description">{t("Hibiki / 设计与代码", "Hibiki / Design and code")}</span></a>
+  <nav class="main-nav" aria-label={t("主要导航", "Main")}>
+    <span class="nav-indicator" aria-hidden="true"></span>
+    <a class:list={['nav-link', 'nav-home', { 'is-active': home }]} href={onHome('#top')} aria-current={home ? 'location' : undefined}>{t("首页", "Home")}</a>
+    <a class:list={['nav-link', { 'is-active': !home }]} href={href('/notes/')} aria-current={!home ? 'location' : undefined}>{t("文章", "Notes")}</a>
+    <a class="nav-link" href={onHome('#about')}>{t("关于", "About")}</a>
+    <a class="lang-switch" href={alternate} hreflang={t('en', 'zh-CN')} lang={t('en', 'zh-CN')}>{t('EN', '中文')}</a>
+  </nav>
+  <button class="theme-toggle" type="button" aria-label={t("切换到深色主题", "Switch to dark theme")} title={t("切换到深色主题", "Switch to dark theme")}><Icon name="sun" size={19} class="theme-icon-sun" /><Icon name="moon" size={19} class="theme-icon-moon" /></button>
+</header>

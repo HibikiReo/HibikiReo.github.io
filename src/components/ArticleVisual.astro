@@ -1,0 +1,23 @@
+---
+import { useLocale } from '../i18n';
+const { t, locale } = useLocale(Astro.url);
+import type { Article } from '../data/content';
+import { getSiteStudies } from '../data/site-studies';
+interface Props { variant: Article['visual']; }
+const { variant } = Astro.props;
+---
+<div class={`article-visual visual-${variant}`} aria-hidden="true">
+  {variant === 'motion' && <><div class="visual-switch"><span></span></div><span class="visual-caption">ease → spring</span></>}
+  {variant === 'layout' && <><div class="visual-layout-mark"><span>Aa</span><div><i></i><i></i><i></i></div></div><span class="visual-caption">spacing & hierarchy</span></>}
+  {variant === 'code' && <><div class="visual-code-lines"><span>&lt;article&gt;</span><span>&nbsp;&nbsp;make it real.</span><span>&lt;/article&gt;</span></div><span class="visual-caption">from design to browser</span></>}
+  {variant === 'themes' && <><div class="visual-theme-mark"><span>Aa</span><span>h.</span><span>Works</span><span>&lt;/&gt;</span></div><span class="visual-caption">color, type & structure</span></>}
+  {variant === 'sites' && <><div class="visual-site-mark">{getSiteStudies(locale).map((study) => <img src={study.cover} alt="" width="1440" height="1000" loading="lazy" />)}</div><span class="visual-caption">{t("4 套整页预览", "4 full-page previews")}</span></>}
+</div>
+
+<style>
+  .visual-sites { background: #252525; color: #fff; }
+  .visual-site-mark { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(2, minmax(0, 1fr)); gap: 2px; }
+  .visual-site-mark > img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .visual-sites > .visual-caption { position: absolute; left: .7rem; bottom: .7rem; padding: .3rem .55rem; border-radius: .2rem; background: #111e; color: #fff; }
+  @media (max-width: 700px) { .visual-sites > .visual-caption { left: .4rem; bottom: .4rem; padding: .2rem .35rem; } }
+</style>

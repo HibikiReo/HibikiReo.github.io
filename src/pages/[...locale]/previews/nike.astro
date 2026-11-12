@@ -1,0 +1,249 @@
+---
+import { useLocale, localePaths } from '../../../i18n';
+const { t } = useLocale(Astro.url);
+export function getStaticPaths() { return localePaths(); }
+import PreviewLayout from '../../../layouts/PreviewLayout.astro';
+const grounds = [
+  { id: 'track', name: t("跑道", "Track"), title: t("把方向留给跑道。", "Let the track pick the direction."), text: t("从一圈轻松走开始。直道慢跑，弯道放松，把注意力留给呼吸和脚下的节奏。", "Start with an easy walking lap. Jog the straights, relax on the bends, and pay attention to your breathing and your stride."), plan: t("慢跑一圈，步行一圈。觉得轻松，再继续。", "Jog a lap, walk a lap. Keep going if it feels easy."), label: t("400 米跑道的俯视图，一条路线沿内道绕行一圈", "A 400 m track from above, with a route running one lap in the inside lane"), route: 'M170 300 H430 A100 100 0 0 0 430 100 H170 A100 100 0 0 0 170 300 Z' },
+  { id: 'street', name: t("街区", "Streets"), title: t("熟悉的街角，新的一圈。", "A new loop past a familiar corner."), text: t("选一条连续、明亮的人行道。经过常去的店，再从公园门口绕回来，折返点不用很远。", "Pick a continuous, well-lit pavement. Pass the shop you always go to and loop back from the park gate. The turnaround does not have to be far."), plan: t("白天先走一遍。遇到路口，停下来。", "Walk it once in daylight. Stop at crossings."), label: t("街区地图，一条路线沿着街道拐过几个路口", "A street map with a route turning through several junctions"), route: 'M60 340 V250 H200 V150 H340 V60 H540' },
+  { id: 'together', name: t("一起跑", "Together"), title: t("有人同行，就多跑一段。", "With company, you run a bit further."), text: t("找一个彼此都舒服的速度，能边跑边说话就合适。", "Find a pace that suits you both. If you can talk while running, it is about right."), plan: t("约好集合点。慢一点开始，一起到终点。", "Agree where to meet. Start slowly and finish together."), label: t("三条并排的路线，一起弯向同一个终点", "Three routes side by side, curving toward the same finish"), route: 'M40 320 C180 320 220 120 360 120 S500 200 560 80' },
+];
+const ticker = ['GO YOUR OWN WAY', t("跑出去", "GET OUT THE DOOR"), 'SHOW UP', t("剩下的路上再说", "SORT THE REST ON THE WAY")];
+---
+<PreviewLayout id="nike">
+  <div class="stride-site" id="top">
+    <header class="stride-header"><a class="stride-mark" href="#top" lang="en">Stride</a><nav aria-label={t("Stride 主导航", "Stride")}><a href="#grounds">{t("找到你的路", "Find your route")}</a><a href="#kit">{t("出门清单", "Checklist")}</a><a href="#journal">{t("跑步手记", "Running notes")}</a></nav><a class="header-action" href="#grounds">{t("现在出发", "Start now")}<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a></header>
+    <main id="main">
+      <section class="stride-hero" data-view-progress data-loop aria-labelledby="stride-title">
+        <svg class="hero-lanes" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          {[0, 1, 2, 3, 4, 5].map((lane) => <path d={`M-100 ${760 - lane * 46} C300 ${700 - lane * 46} 620 ${420 - lane * 40} 1300 ${330 - lane * 62}`} style={`--i:${lane}`} />)}
+        </svg>
+        <div class="hero-copy">
+          <h1 id="stride-title" lang="en"><span><span>GO YOUR</span></span><span><span>OWN WAY.</span></span></h1>
+          <div class="hero-bottom"><p>{t("今天就可以出门。", "You can head out today.")}<br />{t("按自己的节奏跑。", "Run at your own pace.")}</p><a class="white-button" href="#grounds">{t("找到你的路", "Find your route")}</a></div>
+        </div>
+        <span class="hero-caption">{t("出了门，就算开始。", "Out the door counts as started.")}</span>
+      </section>
+
+      <section class="ticker" data-view-progress aria-label={t("跑出去。剩下的，路上再说。", "Get out the door. Sort the rest out on the way.")}>
+        <p aria-hidden="true">{[...ticker, ...ticker, ...ticker].map((word) => <span>{word}</span>)}</p>
+        <p aria-hidden="true">{[...ticker, ...ticker, ...ticker].reverse().map((word) => <span>{word}</span>)}</p>
+      </section>
+
+      <section class="ground-story" id="grounds" data-scroll-scene aria-labelledby="ground-title">
+        <div class="ground-stage">
+          <div class="ground-heading"><h2 id="ground-title">{t("三条路，", "Three routes,")}<br />{t("三种跑法。", "three ways to run.")}</h2><div class="ground-controls" role="group" aria-label={t("切换跑步场景", "Running scene")}>{grounds.map((ground, index) => <button type="button" data-story-step={index} aria-pressed={index === 0}>{ground.name}</button>)}</div></div>
+          <div class="ground-track">{grounds.map((ground, index) => <article class={`ground-panel panel-${ground.id}`} data-step data-step-inert aria-label={ground.name}>
+            <svg class="ground-map" viewBox="0 0 600 400" role="img" aria-label={ground.label}>
+              {ground.id === 'track' && <g class="map-base"><rect x="50" y="60" width="500" height="280" rx="140" /><rect x="90" y="100" width="420" height="200" rx="100" /><rect x="130" y="140" width="340" height="120" rx="60" /></g>}
+              {ground.id === 'street' && <g class="map-base map-blocks">{[0, 1, 2, 3].flatMap((column) => [0, 1, 2].map((row) => <rect x={74 + column * 140} y={74 + row * 100} width="112" height="72" rx="6" />))}</g>}
+              {ground.id === 'together' && <g class="map-base"><path d="M40 350 C180 350 220 150 360 150 S500 230 560 110" /><path d="M40 290 C180 290 220 90 360 90 S500 170 560 50" /></g>}
+              <path class="route" pathLength="1" d={ground.route} />
+            </svg>
+            <div class="ground-copy"><span class="ground-name">0{index + 1} / {ground.name}</span><h3>{ground.title}</h3><p>{ground.text}</p><p class="ground-plan">{ground.plan}</p><a class="white-button" href="#kit">{t("看看出门前要带什么", "See what to take with you")}</a></div>
+          </article>)}</div>
+          <div class="ground-progress" aria-hidden="true"><span></span></div>
+        </div>
+      </section>
+
+      <section class="kit-section" id="kit" data-kit>
+        <div class="kit-copy"><h2 data-reveal>{t("准备好，", "Get ready,")}<br />{t("就出门。", "then go.")}</h2><p data-reveal style="--i:1">{t("穿平时那双鞋就行，", "Your usual shoes will do.")}<br />{t("装备以后再添。", "Buy the gear later.")}</p>
+          <fieldset class="kit-checklist" data-reveal style="--i:2"><legend>{t("出门前，检查这三件事", "Check three things before you leave")}</legend><label><input type="checkbox" /><span><strong>{t("鞋带系牢", "Laces tied")}</strong><span>{t("鞋底完整，走几步，确认鞋跟不滑动。", "Soles intact. Walk a few steps and check that your heels do not slip.")}</span></span></label><label><input type="checkbox" /><span><strong>{t("路线看好", "Route checked")}</strong><span>{t("选有照明的路，留意路口与场地规则。", "Pick a lit route and watch for crossings and venue rules.")}</span></span></label><label><input type="checkbox" /><span><strong>{t("补水有着落", "Water sorted")}</strong><span>{t("按天气和距离准备饮水，手机与钥匙放稳。", "Bring water to suit the weather and distance, and stow your phone and keys.")}</span></span></label></fieldset>
+        </div>
+        <div class="kit-dial">
+          <svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="88" /><circle class="kit-ring" cx="100" cy="100" r="88" pathLength="1" /></svg>
+          <p class="kit-number"><span data-kit-count>0</span><small>/ 3</small></p>
+          <p class="kit-status" data-kit-status role="status">{t("还差 3 件。", "3 to go.")}</p>
+        </div>
+      </section>
+
+      <section class="journal-section" id="journal">
+        <div class="journal-copy"><h2 lang="en" data-reveal>SHOW UP.<br />THEN GO.</h2><h3 data-reveal style="--i:1">{t("跑快之前，先到起点。", "Before running fast, get to the start.")}</h3><p data-reveal style="--i:2">{t("关好家门，走过第一个街角，热身后再慢慢加快。平时路过的那段路，也可以是今天的起点。", "Close the front door, walk past the first corner, warm up and then pick up the pace. A stretch of road you pass every day can be today's start.")}</p><p data-reveal style="--i:3">{t("累了就走，遇到路口就停。回家时，记住哪一段最舒服。下次，从那里接着跑。", "Walk when you are tired and stop at crossings. On the way home, remember which stretch felt best and pick up from there next time.")}</p><a class="white-button" href="#grounds">{t("选一条路，再出发", "Pick a route and go again")}</a></div>
+        <dl class="journal-stats"><div data-reveal><dt>{t("第一周，每次", "Week one, each run")}</dt><dd><span data-count="20">20</span><small>{t("分钟", "min")}</small></dd></div><div data-reveal style="--i:1"><dt>{t("一周出门", "Each week")}</dt><dd><span data-count="3">3</span><small>{t("次", "runs")}</small></dd></div><div data-reveal style="--i:2"><dt>{t("能边跑边说话的配速", "A pace you can talk at")}</dt><dd><span data-count="7.5">7.5</span><small>{t("分钟 / 公里", "min / km")}</small></dd></div></dl>
+      </section>
+
+      <section class="stride-ending" data-view-progress><h2 lang="en">SEE YOU<br />OUT THERE.</h2><div><p>{t("今天给自己留出", "Give yourself")}<br />{t("二十分钟。", "twenty minutes today.")}</p><a href="#grounds" class="black-button">{t("开始你的下一段", "Start your next run")}</a></div></section>
+    </main>
+    <footer class="stride-footer preview-footer"><div><a class="stride-mark" href="#top" lang="en">Stride</a><nav aria-label={t("页脚导航", "Footer")}><a href="#grounds">{t("找到你的路", "Find your route")}</a><a href="#kit">{t("出门清单", "Checklist")}</a><a href="#journal">{t("跑步手记", "Running notes")}</a></nav></div><div class="footer-note"><p>{t("虚构运动品牌 / 路线与数字均为示例，具体路况以现场为准。", "A fictional sports brand / Routes and numbers are examples. Check real conditions on site.")}</p><p>{t("页面图形全部由 SVG 与 CSS 绘制，没有使用照片。Hibiki 的运动官网设计习作。", "All graphics are drawn in SVG and CSS, with no photographs. Hibiki's sports site study.")}</p></div></footer>
+  </div>
+</PreviewLayout>
+<style>
+  @font-face { font-family: 'Archivo Black'; src: url('/fonts/archivo-black.ttf') format('truetype'); font-style: normal; font-weight: 400; font-display: swap; }
+  .stride-site { overflow-x: clip; color: #111; background: #fff; --orange: #ed4526; }
+  .stride-header { display: flex; align-items: center; justify-content: space-between; gap: 3rem; min-height: 76px; padding: .75rem 4%; }
+  .stride-mark { font-family: 'Archivo Black', sans-serif; font-size: 2rem; letter-spacing: -.035em; line-height: 1; }
+  .stride-header nav { display: flex; gap: 2.5rem; font-size: .8125rem; font-weight: 550; }
+  .stride-header nav a { padding-block: 1rem; background: linear-gradient(currentColor, currentColor) 0 75% / 0 2px no-repeat; transition: background-size .3s var(--motion-ease); }
+  .stride-header nav a:hover { background-size: 100% 2px; }
+  .header-action { display: inline-flex; align-items: center; gap: .75rem; min-height: 2.75rem; font-size: .8125rem; font-weight: 550; }
+  .header-action svg { transition: transform .3s var(--motion-ease); }
+  .header-action:hover svg { transform: translateX(5px); }
+
+  .stride-hero { position: relative; overflow: hidden; height: calc(100svh - 76px); min-height: 620px; background: #111; color: #fff; --shift: calc((var(--view, .5) - .5) * 2); }
+  .hero-lanes { position: absolute; inset: 0; width: 100%; height: 100%; transform: translateY(calc(var(--shift) * -12%)) scale(1.1); }
+  .hero-lanes path { fill: none; stroke: var(--orange); stroke-width: 34; stroke-dasharray: 2200; animation: lane-draws 1.6s var(--motion-ease) calc(var(--i) * 90ms) both; }
+  .hero-lanes path:nth-child(even) { stroke: #c9351a; }
+  .hero-copy { position: absolute; left: 5%; right: 5%; bottom: 7%; transform: translateY(calc(var(--shift) * 30%)); }
+  .hero-copy h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(3rem, 9.7vw, 9.5rem); font-weight: 400; line-height: .98; letter-spacing: -.04em; text-wrap: initial; }
+  .hero-copy h1 > span { display: block; overflow: hidden; }
+  .hero-copy h1 > span > span { display: block; animation: words-arrive .9s var(--motion-ease) .35s both; }
+  .hero-copy h1 > span:nth-child(2) > span { animation-delay: .47s; }
+  .hero-bottom { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-top: 2rem; animation: fade-up .9s var(--motion-ease) .8s both; }
+  .hero-bottom p { font-size: 1rem; line-height: 1.8; }
+  .white-button, .black-button { display: inline-flex; align-items: center; justify-content: center; min-height: 3rem; padding: .8rem 1.6rem; border-radius: 999px; background: #fff; color: #111; font-size: .875rem; font-weight: 600; transition: background .2s, transform .3s var(--motion-ease); }
+  .white-button:hover { background: #d9d9d9; transform: translateY(-3px); }
+  .black-button { background: #111; color: #fff; }
+  .black-button:hover { background: #353535; transform: translateY(-3px); }
+  .hero-caption { position: absolute; right: 4%; top: 2rem; font-size: .75rem; writing-mode: vertical-rl; letter-spacing: .1em; }
+
+  /* Two rows of type slide against each other as the band crosses the viewport. */
+  .ticker { display: grid; gap: .5rem; padding-block: 2.5rem; overflow: hidden; background: var(--orange); }
+  .ticker p { display: flex; gap: 3rem; width: max-content; font-family: 'Archivo Black', sans-serif; font-size: clamp(2rem, 5.5vw, 5rem); font-weight: 800; line-height: 1.1; letter-spacing: -.03em; white-space: nowrap; transform: translateX(calc(var(--view, .5) * -35%)); }
+  .ticker p:nth-child(2) { color: #fff; transform: translateX(calc(-40% + var(--view, .5) * 35%)); }
+
+  .ground-story { position: relative; height: 320svh; background: #111; --progress: 0; }
+  .ground-stage { position: sticky; top: 0; height: 100svh; min-height: 650px; overflow: hidden; color: #fff; }
+  .ground-heading { position: absolute; top: 2.5rem; left: 5%; right: 5%; z-index: 3; display: flex; align-items: start; justify-content: space-between; gap: 3rem; }
+  .ground-heading h2 { font-size: clamp(1.8rem, 3.4vw, 3rem); font-weight: 800; line-height: 1.25; letter-spacing: -.035em; }
+  .ground-controls { display: flex; gap: .25rem; padding: .3rem; border-radius: 999px; background: #000000a6; }
+  .ground-controls button { min-height: 2.75rem; padding: .6rem 1.1rem; border: 0; border-radius: 999px; background: transparent; color: #e5e5e5; font-size: .8125rem; transition: background .3s, color .3s; }
+  .ground-controls button[aria-pressed="true"] { color: #111; background: #fff; }
+  .ground-track { display: flex; width: 300%; height: 100%; transform: translateX(calc(var(--progress) * -66.6666667%)); will-change: transform; }
+  .ground-panel { position: relative; display: grid; grid-template-columns: 1fr 1.1fr; align-items: end; gap: 4%; flex: 0 0 33.3333333%; height: 100%; padding: 11rem 5% 6rem; overflow: hidden; }
+  .panel-track { background: #b9321a; }
+  .panel-street { background: #1c2a33; }
+  .panel-together { background: #111; }
+  .ground-map { align-self: center; width: 100%; max-height: 100%; overflow: visible; }
+  .map-base > * { fill: none; stroke: #ffffff38; stroke-width: 2; }
+  .map-blocks > * { fill: #ffffff14; stroke: none; }
+  .route { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.8s var(--motion-ease) .2s; }
+  .panel-street .route, .panel-together .route { stroke: var(--orange); }
+  .ground-panel.is-active .route { stroke-dashoffset: 0; }
+  .ground-copy { max-width: 36rem; }
+  .ground-copy > * { transition: opacity .8s var(--motion-ease), transform .8s var(--motion-ease); }
+  .ground-panel:not(.is-active) .ground-copy > * { opacity: 0; transform: translateY(2rem); }
+  .ground-copy > :nth-child(2) { transition-delay: .08s; }
+  .ground-copy > :nth-child(3) { transition-delay: .16s; }
+  .ground-copy > :nth-child(4) { transition-delay: .24s; }
+  .ground-copy > :nth-child(5) { transition-delay: .32s; }
+  .ground-name { display: inline-block; margin-bottom: .75rem; font-size: .875rem; font-variant-numeric: tabular-nums; }
+  .ground-copy h3 { font-size: clamp(1.6rem, 3.3vw, 3rem); font-weight: 750; line-height: 1.3; letter-spacing: -.035em; }
+  .ground-copy > p { margin-top: 1rem; color: #e7e7e7; font-size: .9375rem; line-height: 1.8; }
+  .ground-copy > .ground-plan { color: #d0d0d0; font-size: .8125rem; }
+  .ground-copy > a { margin-top: 1.5rem; }
+  .ground-progress { position: absolute; z-index: 3; left: 5%; right: 5%; bottom: 2.5rem; height: 2px; background: #ffffff50; }
+  .ground-progress span { display: block; height: 100%; background: #fff; transform-origin: left; transform: scaleX(calc(.05 + var(--progress) * .95)); }
+
+  .kit-section { display: grid; grid-template-columns: 1fr 1fr; --done: 0; }
+  .kit-copy { align-self: center; padding: 6rem 14%; }
+  .kit-copy > h2 { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; line-height: 1.15; letter-spacing: -.04em; }
+  .kit-copy > p { margin-top: 1.5rem; color: #555; font-size: .9375rem; line-height: 1.85; }
+  .kit-checklist { margin: 3rem 0 0; padding: 0; border: 0; }
+  .kit-checklist legend { margin-bottom: 1rem; color: #555; font-size: .75rem; }
+  .kit-checklist label { display: flex; align-items: start; gap: .85rem; padding-block: 1.25rem; border-top: 1px solid #ccc; cursor: pointer; transition: padding-left .4s var(--motion-ease); }
+  .kit-checklist label:hover { padding-left: .5rem; }
+  .kit-checklist input { flex-shrink: 0; width: 20px; height: 20px; margin: .15rem 0 0; accent-color: #111; }
+  .kit-checklist label > span { display: grid; gap: .5rem; }
+  .kit-checklist strong { width: fit-content; font-size: .9375rem; font-weight: 650; background: linear-gradient(currentColor, currentColor) 0 55% / 0 2px no-repeat; transition: background-size .4s var(--motion-ease), color .4s; }
+  .kit-checklist label > span > span { color: #555; font-size: .8125rem; line-height: 1.8; }
+  .kit-checklist input:checked + span strong { background-size: 100% 2px; color: #777; }
+  .kit-dial { position: relative; display: grid; place-content: center; justify-items: center; min-height: 640px; background: var(--orange); transition: background .6s; }
+  .kit-section.is-ready .kit-dial { background: #111; color: #fff; }
+  .kit-dial svg { position: absolute; left: 50%; top: 50%; width: min(70%, 26rem); translate: -50% -50%; rotate: -90deg; }
+  .kit-dial circle { fill: none; stroke: #00000024; stroke-width: 10; }
+  .kit-dial .kit-ring { stroke: currentColor; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--done)); transition: stroke-dashoffset .9s var(--motion-ease); }
+  .kit-number { font-family: 'Archivo Black', sans-serif; font-size: clamp(5rem, 11vw, 9rem); line-height: 1; font-variant-numeric: tabular-nums; }
+  .kit-number small { margin-left: .5rem; font-size: .3em; }
+  .kit-status { margin-top: 1rem; font-size: .9375rem; font-weight: 600; }
+
+  .journal-section { display: grid; grid-template-columns: 1.1fr 1fr; background: #111; color: #fff; }
+  .journal-copy { align-self: center; padding: 7rem 12%; }
+  .journal-copy > h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(2.75rem, 4.3vw, 4.5rem); font-weight: 400; line-height: 1.05; letter-spacing: -.04em; }
+  .journal-copy > h3 { margin-top: 2rem; font-size: 1.5rem; line-height: 1.5; font-weight: 650; }
+  .journal-copy > p { max-width: 29rem; margin-top: 1.5rem; color: #bebebe; font-size: .875rem; line-height: 2; }
+  .journal-copy > a { margin-top: 2rem; }
+  .journal-stats { display: grid; align-content: center; margin: 0; padding: 5rem 10%; border-left: 1px solid #333; }
+  .journal-stats > div { padding-block: 2rem; border-top: 1px solid #333; }
+  .journal-stats > div:first-child { border-top: 0; }
+  .journal-stats dt { color: #bebebe; font-size: .8125rem; }
+  .journal-stats dd { margin: .5rem 0 0; font-family: 'Archivo Black', sans-serif; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1; color: var(--orange); font-variant-numeric: tabular-nums; }
+  .journal-stats small { margin-left: .75rem; color: #fff; font-family: 'DM Sans Variable', sans-serif; font-size: .875rem; }
+
+  .stride-ending { display: flex; align-items: end; justify-content: space-between; gap: 4rem; padding: 7rem 5%; overflow: hidden; background: var(--orange); }
+  .stride-ending h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(3rem, 7.4vw, 7.5rem); font-weight: 400; line-height: 1.03; letter-spacing: -.04em; transform: translateX(calc((1 - clamp(0, calc(var(--view, 1) * 2.2), 1)) * -30%)); }
+  .stride-ending p { font-size: 1rem; line-height: 1.85; }
+  .stride-ending a { margin-top: 1.75rem; }
+  .stride-footer { padding: 3rem 5%; background: #fff; }
+  .stride-footer > div:first-child { display: flex; align-items: center; justify-content: space-between; gap: 3rem; }
+  .stride-footer .stride-mark { font-size: 3rem; }
+  .stride-footer nav { display: flex; gap: 2.5rem; font-size: .8125rem; }
+  .footer-note { display: flex; justify-content: space-between; gap: 2rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid #d0d0d0; color: #666; font-size: .6875rem; line-height: 1.8; }
+  @keyframes lane-draws { from { stroke-dashoffset: 2200; } to { stroke-dashoffset: 0; } }
+  @keyframes words-arrive { from { transform: translateY(105%); } to { transform: translateY(0); } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: translateY(0); } }
+  @media (max-width: 1000px) {
+    .stride-header { gap: 2rem; }
+    .stride-header nav { gap: 1.5rem; }
+    .kit-copy { padding: 4rem 10%; }
+    .journal-copy { padding: 5rem 10%; }
+    .stride-ending { gap: 3rem; }
+  }
+  @media (max-width: 700px) {
+    .stride-header { min-height: 68px; padding-inline: 1.25rem; gap: 1rem; }
+    .stride-mark { font-size: 1.65rem; }
+    .stride-header nav { display: none; }
+    .header-action { font-size: .75rem; }
+    .stride-hero { height: calc(100svh - 68px); min-height: 580px; }
+    .hero-copy { left: 1.25rem; right: 1.25rem; bottom: 5rem; }
+    .hero-copy h1 { font-size: clamp(2.9rem, 10.7vw, 4.5rem); }
+    .hero-bottom { align-items: start; flex-direction: column; gap: 1.5rem; margin-top: 1.5rem; }
+    .hero-bottom p { font-size: .875rem; }
+    .hero-caption { right: 1.25rem; top: 1.5rem; font-size: .6875rem; }
+    .ticker { padding-block: 1.75rem; }
+    .ground-stage { min-height: 620px; }
+    .ground-heading { top: 1.5rem; left: 1.5rem; right: 1.5rem; flex-direction: column; gap: 1rem; }
+    .ground-heading h2 { font-size: 1.6rem; }
+    .ground-controls button { min-height: 2.5rem; padding-inline: .9rem; font-size: .75rem; }
+    .ground-panel { grid-template-columns: 1fr; grid-template-rows: minmax(0, 1fr) auto; gap: 1rem; padding: 11.5rem 1.5rem 4.5rem; }
+    .ground-map { height: 100%; }
+    .ground-copy h3 { font-size: 1.5rem; }
+    .ground-copy > p { margin-top: .6rem; font-size: .8125rem; }
+    .ground-copy > .ground-plan { display: none; }
+    .ground-copy > a { min-height: 2.75rem; margin-top: 1rem; font-size: .8125rem; padding-inline: 1.25rem; }
+    .kit-section, .journal-section { grid-template-columns: 1fr; }
+    .kit-copy { padding: 4rem 1.5rem; }
+    .kit-copy > h2 { font-size: 2.75rem; }
+    .kit-checklist { margin-top: 2rem; }
+    .kit-dial { min-height: 380px; }
+    .kit-dial svg { width: min(72%, 18rem); }
+    .journal-copy { padding: 4rem 1.5rem 3rem; }
+    .journal-copy > h2 { font-size: 2.9rem; }
+    .journal-copy > h3 { font-size: 1.3rem; }
+    .journal-stats { padding: 0 1.5rem 3rem; border-left: 0; }
+    .stride-ending { align-items: start; flex-direction: column; gap: 2rem; padding: 4rem 1.5rem; }
+    .stride-ending h2 { font-size: clamp(2.6rem, 10.5vw, 4rem); }
+    .stride-ending p { font-size: .875rem; }
+    .stride-footer { padding: 3rem 1.5rem; }
+    .stride-footer > div:first-child { align-items: start; flex-direction: column; gap: 2rem; }
+    .stride-footer nav { flex-wrap: wrap; gap: 1.5rem; }
+    .footer-note { flex-direction: column; gap: 1rem; }
+  }
+  /* Without scripting or with reduced motion, the three scenes stack in reading order. */
+  :global(html:not(.preview-ready)) .ground-story { height: auto; }
+  :global(html:not(.preview-ready)) .ground-stage { position: relative; height: auto; }
+  :global(html:not(.preview-ready)) .ground-heading { position: static; padding: 2rem 5%; }
+  :global(html:not(.preview-ready)) .ground-controls, :global(html:not(.preview-ready)) .ground-progress { display: none; }
+  :global(html:not(.preview-ready)) .ground-track { display: block; width: 100%; transform: none; }
+  :global(html:not(.preview-ready)) .ground-panel { min-height: 640px; padding-top: 4rem; }
+  :global(html:not(.preview-ready)) .ground-panel .route { stroke-dashoffset: 0; }
+  :global(html:not(.preview-ready)) .ground-panel .ground-copy > * { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .ground-story { height: auto; }
+    .ground-stage { position: relative; height: auto; }
+    .ground-heading { position: static; padding: 2rem 5%; }
+    .ground-progress { display: none; }
+    .ground-track { display: block; width: 100%; transform: none; }
+    .ground-panel { min-height: 640px; padding-top: 4rem; }
+    .hero-lanes, .hero-copy, .ticker p, .ticker p:nth-child(2), .stride-ending h2 { transform: none; }
+  }
+</style>

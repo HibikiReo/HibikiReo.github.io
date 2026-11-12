@@ -1,0 +1,51 @@
+---
+import { useLocale, localePaths } from '../../../i18n';
+const { t, href, locale } = useLocale(Astro.url);
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import SiteFooter from '../../../components/SiteFooter.astro';
+import ArticleVisual from '../../../components/ArticleVisual.astro';
+import ThemeShowcase from '../../../components/ThemeShowcase.astro';
+import WebsitePreviewLink from '../../../components/WebsitePreviewLink.astro';
+import Icon from '../../../components/Icon.astro';
+import { getArticles, type Article } from '../../../data/content';
+
+export function getStaticPaths() {
+  return localePaths().flatMap(({ params }) => getArticles(params.locale ? 'zh' : 'en').map((article) => ({ params: { ...params, slug: article.id }, props: { article } })));
+}
+interface Props { article: Article; }
+const { article } = Astro.props;
+const related = getArticles(locale).filter((item) => item.id !== article.id).slice(0, 2);
+---
+<BaseLayout title={`${article.title} | ${t('Hibiki 的前端设计与代码笔记', "Hibiki's notes on front-end design and code")}`} description={article.summary}>
+  <div class="page-progress" aria-hidden="true"></div>
+  <SiteHeader current="notes" />
+  <main id="main" class="reading-main section-shell">
+    <article id="top" class="reading-article" aria-labelledby="article-title">
+      <a class="reading-back" href={href('/notes/')}><Icon name="arrow" size={15} />{t("回到文章列表", "Back to all notes")}</a>
+      <header class="reading-header">
+        <div class="article-meta"><span class={`category-label category-${article.visual}`}>{article.category}</span><time datetime={article.datetime}>{article.date}</time><span>{t("阅读约", "")} {article.readTime}</span></div>
+        <h1 id="article-title">{article.title}</h1>
+        <p class="reading-summary">{article.summary}</p>
+        <div class="reading-author"><span class="author-avatar" aria-hidden="true">h.</span><div><strong>Hibiki</strong><span>{t("设计与代码笔记", "Notes on design and code")}</span></div><div class="article-tags">{article.tags.map((tag) => <span>{tag}</span>)}</div></div>
+      </header>
+      <div class="reading-layout">
+        <div class="article-body">
+          {article.sections.map((section, index) => (
+            <section id={`section-${index + 1}`} aria-labelledby={`heading-${index + 1}`}>
+              <h2 id={`heading-${index + 1}`}>{section.heading}</h2>
+              {section.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+              {section.theme && <ThemeShowcase id={section.theme} />}
+              {section.siteStudy && <WebsitePreviewLink id={section.siteStudy} />}
+              {section.code && <figure class="code-block"><figcaption>{section.code.language}</figcaption><pre tabindex="0" aria-label={`${section.code.language} ${t('代码示例', 'code sample')}`}><code>{section.code.source}</code></pre></figure>}
+            </section>
+          ))}
+          <div class="article-end"><span class="small-dot"></span><a href={href('/notes/')}>{t("回到文章列表", "Back to all notes")} <Icon name="arrow" size={15} /></a></div>
+        </div>
+        <aside class="reading-sidebar" aria-label={t("文章目录", "Table of contents")}><div class="reading-toc"><p>{t("本篇目录", "Contents")}</p><nav aria-label={t("本文目录", "In this article")}>{article.sections.map((section, index) => <a href={`#section-${index + 1}`}>{section.heading}</a>)}</nav><a class="reading-home" href={href('/notes/')}>{t("全部文章", "All notes")} <Icon name="arrow" size={14} /></a></div></aside>
+      </div>
+    </article>
+    <section class="related-section" aria-labelledby="related-title"><div class="section-heading"><h2 id="related-title">{t("其他笔记", "More notes")}</h2><p class="section-description">{t("交互动效、页面布局与开发过程。", "Motion, page layout and the development process.")}</p></div><div class="related-grid">{related.map((item) => <a class="related-card" href={href(`/articles/${item.id}/`)}><ArticleVisual variant={item.visual} /><div><span class={`category-label category-${item.visual}`}>{item.category}</span><h3>{item.title}</h3><p>{item.summary}</p><span class="related-read">{t("继续阅读", "Keep reading")} <Icon name="arrow" size={15} /></span></div></a>)}</div></section>
+  </main>
+  <SiteFooter />
+</BaseLayout>

@@ -1,0 +1,249 @@
+---
+import { useLocale, localePaths } from '../../../i18n';
+const { t } = useLocale(Astro.url);
+export function getStaticPaths() { return localePaths(); }
+import PreviewLayout from '../../../layouts/PreviewLayout.astro';
+import OrielLamp from '../../../components/OrielLamp.astro';
+const finishes = [
+  { id: 'pearl', name: t("月白", "Moon white"), color: '#e9e6df' },
+  { id: 'graphite', name: t("石墨", "Graphite"), color: '#55575c' },
+  { id: 'clay', name: t("陶土", "Clay"), color: '#b8684a' },
+  { id: 'moss', name: t("苔绿", "Moss"), color: '#75805f' },
+];
+const presets = [
+  { name: t("阅读", "Reading"), kelvin: 4000, level: 80 },
+  { name: t("专注", "Focus"), kelvin: 5600, level: 100 },
+  { name: t("夜晚", "Night"), kelvin: 2700, level: 30 },
+];
+---
+<PreviewLayout id="apple">
+  <div class="oriel-site" id="top" data-oriel data-finish="pearl">
+    <header class="product-header"><a class="product-name" href="#top" lang="en">Oriel</a><nav aria-label={t("产品导航", "Product")}><a href="#light">{t("光线", "Light")}</a><a href="#design">{t("设计", "Design")}</a><a href="#details">{t("细节", "Details")}</a></nav><a class="blue-button" href="#light">{t("调一调光", "Try the light")}</a></header>
+    <main id="main">
+      <section class="hero" data-scroll-scene aria-labelledby="oriel-title">
+        <div class="hero-stage">
+          <div class="hero-lamp"><OrielLamp label={t("Oriel 桌灯：圆形灯头、细长灯杆和圆形底座", "The Oriel desk lamp: a round head, a thin stem and a round base")} /></div>
+          <p class="hero-step hero-prelude">{t("天黑以后，", "When it gets dark,")}<br />{t("先开一盏灯。", "turn on one lamp.")}</p>
+          <div class="hero-step hero-title"><p lang="en">Oriel</p><h1 id="oriel-title">{t("把光，调到刚刚好。", "Light, set the way you like it.")}</h1></div>
+          <div class="hero-track" aria-hidden="true"><span></span></div>
+        </div>
+      </section>
+
+      <section class="intro wide" aria-labelledby="intro-title">
+        <h2 id="intro-title" data-reveal>{t("一圈光，", "One ring of light")}<br />{t("照亮一整张桌子。", "for the whole desk.")}</h2>
+        <p class="lead" data-reveal style="--i:1">{t("Oriel 是一盏可以拿着走的桌灯。圆形灯头把光铺匀，旋钮管亮度，色温从烛光一直调到正午。", "Oriel is a desk lamp you can carry around. The round head spreads light evenly, a dial sets the brightness, and the color temperature runs from candlelight to midday.")}</p>
+        <dl class="stats">
+          <div data-reveal><dt>{t("色温范围", "Color temperature")}</dt><dd>2700-<span data-count="6500">6500</span><small>K</small></dd></div>
+          <div data-reveal style="--i:1"><dt>{t("最高亮度", "Peak brightness")}</dt><dd><span data-count="1200">1200</span><small>{t("流明", "lumens")}</small></dd></div>
+          <div data-reveal style="--i:2"><dt>{t("显色指数", "Color rendering")}</dt><dd>Ra <span data-count="97">97</span></dd></div>
+          <div data-reveal style="--i:3"><dt>{t("离线使用", "Unplugged")}</dt><dd><span data-count="40">40</span><small>{t("小时", "hours")}</small></dd></div>
+        </dl>
+      </section>
+
+      <section class="studio-section" id="light" aria-labelledby="light-title">
+        <div class="wide"><h2 id="light-title" data-reveal>{t("早上偏冷，", "Cooler in the morning,")}<br />{t("夜里偏暖。", "warmer at night.")}</h2><p class="lead" data-reveal style="--i:1">{t("拖一下滑杆，看墙面和桌面怎样跟着变。", "Drag a slider and watch the wall and the desk change.")}</p></div>
+        <div class="studio" data-light-studio data-reveal>
+          <div class="room">
+            <div class="room-lamp"><OrielLamp label={t("桌上的 Oriel，灯光随右侧的设置变化", "Oriel on a desk. Its light follows the settings beside it")} /></div>
+            <div class="room-books" aria-hidden="true"><i></i><i></i><i></i></div>
+            <div class="room-desk" aria-hidden="true"></div>
+          </div>
+          <div class="controls">
+            <div class="presets" role="group" aria-label={t("光线预设", "Light presets")}>{presets.map((preset) => <button type="button" data-preset data-kelvin-value={preset.kelvin} data-level-value={preset.level} aria-pressed={preset.kelvin === 4000}>{preset.name}</button>)}</div>
+            <label><span>{t("色温", "Temperature")}<span data-kelvin-output>4000 K</span></span><input type="range" min="2700" max="6500" step="100" value="4000" data-kelvin /></label>
+            <label><span>{t("亮度", "Brightness")}<span data-level-output>80%</span></span><input type="range" min="5" max="100" step="5" value="80" data-level /></label>
+            <p>{t("2700 K 接近烛光，适合睡前。", "2700 K is close to candlelight, good before bed.")}<br />{t("5600 K 接近正午，适合看图纸。", "5600 K is close to midday, good for reading drawings.")}</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="design" id="design" data-scroll-scene aria-labelledby="design-title">
+        <div class="design-stage">
+          <div class="design-lamp"><OrielLamp /></div>
+          <div class="design-copy">
+            <h2 id="design-title">{t("转过来看，", "Seen from the side,")}<br />{t("只有 9 毫米。", "it is 9 mm thin.")}</h2>
+            <ol>
+              <li data-step><span>01</span><h3>{t("一圈匀光", "An even ring")}</h3><p>{t("216 颗灯珠藏在导光板边缘，整面发光，看不到一个亮点。", "216 LEDs sit along the edge of the light guide. The whole face glows and you cannot pick out a single point.")}</p></li>
+              <li data-step><span>02</span><h3>{t("灯头能转", "The head turns")}</h3><p>{t("左右各转 80 度。写字时照桌面，休息时转向墙。", "It turns 80 degrees each way. Aim it at the desk to write, or at the wall when you take a break.")}</p></li>
+              <li data-step><span>03</span><h3>{t("一整块铝", "One piece of aluminum")}</h3><p>{t("灯头外圈由整块铝材切出，没有接缝，摸上去是凉的。", "The outer ring is cut from a single block of aluminum. It has no seams and feels cool to the touch.")}</p></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section class="finish" aria-labelledby="finish-title">
+        <h2 id="finish-title" data-reveal>{t("四种外壳。", "Four finishes.")}</h2>
+        <div class="finish-lamp" data-finish-lamp><OrielLamp label={t("当前外观的 Oriel 桌灯", "The Oriel lamp in the selected finish")} /></div>
+        <p class="finish-caption" data-finish-caption aria-live="polite">{t("月白", "Moon white")}</p>
+        <div class="swatches" role="group" aria-label={t("选择外观", "Choose a finish")}>{finishes.map((finish, index) => <button type="button" data-finish-option={finish.id} data-finish-name={finish.name} aria-label={finish.name} aria-pressed={index === 0} style={`--swatch:${finish.color}`}><span></span></button>)}</div>
+      </section>
+
+      <section class="details wide" id="details" aria-labelledby="details-title">
+        <h2 id="details-title" data-reveal>{t("用起来的几件小事。", "A few things you notice in use.")}</h2>
+        <div class="bento">
+          <article class="card card-dial" data-reveal data-loop><div class="dial" aria-hidden="true"><i></i></div><h3>{t("转一下，亮一点。", "Turn it for more light.")}</h3><p>{t("旋钮每格 5%，按下去是开关，手机不在手边也能调。", "Each click of the dial is 5%, and a press switches the lamp on or off. You can adjust it without your phone.")}</p></article>
+          <article class="card card-battery" data-reveal style="--i:1"><p class="big"><span data-count="40">40</span><small>{t("小时", "hours")}</small></p><div class="meter" aria-hidden="true"><span data-reveal="grow"></span></div><h3>{t("拔掉线，挪到沙发边。", "Unplug it and move it to the sofa.")}</h3><p>{t("30% 亮度下的续航。充满需要 2.5 小时。", "Battery life at 30% brightness. A full charge takes 2.5 hours.")}</p></article>
+          <article class="card card-sense" data-reveal data-loop><div class="sky" aria-hidden="true"><i></i></div><h3>{t("天色暗了，它知道。", "It notices when the daylight fades.")}</h3><p>{t("顶部的感光点读取环境亮度，傍晚自动补一点光。", "A sensor on top reads the room and adds a little light toward evening.")}</p></article>
+          <article class="card card-port" data-reveal style="--i:1"><p class="big" lang="en">USB-C</p><h3>{t("一根线就够。", "One cable is enough.")}</h3><p>{t("和笔记本共用充电器，底座不带电源适配器。", "It shares a charger with your laptop. There is no power brick in the base.")}</p></article>
+        </div>
+      </section>
+
+      <section class="close" data-view-progress aria-labelledby="close-title">
+        <div class="close-lamp"><OrielLamp /></div>
+        <h2 id="close-title">{t("留一盏灯，给今晚。", "Leave one lamp on tonight.")}</h2>
+        <a class="blue-button" href="#light">{t("再调一次光", "Adjust the light again")}</a>
+      </section>
+    </main>
+    <footer class="oriel-footer preview-footer"><p>{t("Oriel 是为这次练习虚构的产品，参数均为示例。灯体与场景全部由 CSS 绘制，没有使用照片。", "Oriel is a product invented for this exercise, and the specs are examples. The lamp and the scenes are drawn in CSS, with no photographs.")}</p><div><a href="#top" lang="en">Oriel</a><span>{t("Hibiki / 产品叙事与滚动交互习作", "Hibiki / A study in product storytelling and scroll interaction")}</span></div></footer>
+  </div>
+</PreviewLayout>
+
+<style>
+  @property --body { syntax: '<color>'; inherits: true; initial-value: #e9e6df; }
+  @property --body-hi { syntax: '<color>'; inherits: true; initial-value: #ffffff; }
+  @property --body-lo { syntax: '<color>'; inherits: true; initial-value: #a9a59c; }
+  .oriel-site { overflow-x: clip; color-scheme: dark; color: #f5f5f7; background: #000; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; --body: #e9e6df; --body-hi: #ffffff; --body-lo: #a9a59c; --glow: #ffd1a3; transition: --body .7s var(--motion-ease), --body-hi .7s var(--motion-ease), --body-lo .7s var(--motion-ease); }
+  .oriel-site[data-finish="graphite"] { --body: #55575c; --body-hi: #8b8e95; --body-lo: #2b2c30; }
+  .oriel-site[data-finish="clay"] { --body: #b8684a; --body-hi: #e29a7c; --body-lo: #7c3f2a; }
+  .oriel-site[data-finish="moss"] { --body: #75805f; --body-hi: #a7b18f; --body-lo: #485038; }
+  .wide { width: min(1180px, calc(100% - 8rem)); margin-inline: auto; }
+  h2 { font-size: clamp(2.25rem, 5vw, 4.5rem); line-height: 1.13; letter-spacing: -.04em; font-weight: 650; }
+  .lead { max-width: 40rem; margin-top: 2rem; color: #a1a1a6; font-size: 1.2rem; font-weight: 500; line-height: 1.8; }
+  .product-header { position: sticky; top: 0; z-index: 35; display: flex; align-items: center; gap: 3rem; height: 52px; padding-inline: max(5%, calc((100vw - 1200px) / 2)); border-bottom: 1px solid #ffffff26; background: #000d; backdrop-filter: blur(18px); }
+  .product-name { margin-right: auto; font-size: 1.15rem; font-weight: 600; }
+  .product-header nav { display: flex; gap: 1.75rem; color: #ccc; font-size: .75rem; }
+  .product-header nav a { padding-block: 1rem; transition: color .2s; }
+  .product-header nav a:hover { color: #fff; }
+  .blue-button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.25rem; padding: .4rem 1.1rem; border-radius: 999px; background: #0071e3; color: #fff; font-size: .8125rem; transition: background .2s, transform .3s var(--motion-ease); }
+  .blue-button:hover { background: #1682ee; transform: scale(1.04); }
+
+  /* Hero: the ring fills the screen unlit, switches on, then the camera pulls back. */
+  .hero { height: 240svh; --progress: 1; }
+  :global(html.preview-ready) .hero { --progress: 0; }
+  .hero-stage { position: sticky; top: 52px; display: grid; place-items: center; height: calc(100svh - 52px); min-height: 540px; overflow: hidden; --glow: #ffc98f; --level: clamp(0, calc(var(--progress) / .3), 1); --pull: clamp(0, calc((var(--progress) - .3) / .55), 1); }
+  .hero-lamp { font-size: min(3.6svh, 6.5vw); transform-origin: 50% 28.6%; transform: translateY(calc(-6svh + (1 - var(--pull)) * 14svh)) scale(calc(3.4 - var(--pull) * 2.4)); will-change: transform; }
+  .hero-step { position: absolute; left: 1.5rem; right: 1.5rem; text-align: center; }
+  .hero-prelude { top: 50%; translate: 0 -50%; opacity: clamp(0, calc(1 - var(--progress) * 6), 1); font-size: clamp(2rem, 5vw, 4rem); font-weight: 650; line-height: 1.25; letter-spacing: -.04em; }
+  .hero-title { bottom: 6%; opacity: clamp(0, calc((var(--progress) - .78) * 8), 1); transform: translateY(calc((1 - clamp(0, calc((var(--progress) - .78) * 8), 1)) * 2rem)); }
+  .hero-title p { color: #a1a1a6; font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 600; }
+  .hero-title h1 { margin-top: .5rem; font-size: clamp(2.3rem, 5.6vw, 5rem); font-weight: 650; line-height: 1.15; letter-spacing: -.04em; }
+  .hero-track { position: absolute; left: 6.25%; right: 6.25%; bottom: 0; height: 2px; background: #ffffff30; }
+  .hero-track span { display: block; height: 100%; background: #fff; transform-origin: left; transform: scaleX(var(--progress)); }
+
+  .intro { padding-block: 9rem 8rem; }
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; margin: 6rem 0 0; padding-top: 2.5rem; border-top: 1px solid #333; }
+  .stats dt { color: #a1a1a6; font-size: .875rem; }
+  .stats dd { margin: .75rem 0 0; font-size: clamp(1.6rem, 3.1vw, 2.75rem); font-weight: 650; letter-spacing: -.03em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .stats small { margin-left: .3rem; color: #a1a1a6; font-size: .9rem; font-weight: 500; letter-spacing: 0; }
+
+  .studio-section { padding-block: 4rem 9rem; }
+  .studio { display: grid; grid-template-columns: minmax(0, 1fr) 320px; width: min(1280px, calc(100% - 4rem)); margin: 4rem auto 0; overflow: hidden; border-radius: 28px; background: #161617; --glow: #ffd1a3; --level: .8; }
+  .room { position: relative; height: clamp(420px, 48vw, 640px); overflow: hidden; background: #0b0b0c; }
+  .room::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 75% 85% at 40% 38%, var(--glow), transparent 70%); opacity: calc(var(--level) * .55); transition: opacity .3s; }
+  .room-lamp { position: absolute; left: 40%; bottom: 19%; translate: -50% 0; font-size: clamp(1.05rem, 2.3vw, 1.9rem); }
+  .room-desk { position: absolute; inset: auto 0 0; height: 21%; background: linear-gradient(180deg, color-mix(in srgb, var(--glow) 30%, #4a3d33), #1c1714); filter: brightness(calc(.3 + var(--level) * .7)); }
+  .room-books { position: absolute; left: 66%; bottom: 21%; display: grid; justify-items: center; filter: brightness(calc(.25 + var(--level) * .75)); }
+  .room-books i { display: block; height: clamp(.7rem, 1.4vw, 1.1rem); border-radius: 2px; }
+  .room-books i:nth-child(1) { width: clamp(4rem, 9vw, 7rem); background: #8d5b46; translate: -8% 0; }
+  .room-books i:nth-child(2) { width: clamp(5rem, 11vw, 9rem); background: #d8d2c4; }
+  .room-books i:nth-child(3) { width: clamp(4.5rem, 10vw, 8rem); background: #5c6a58; translate: 5% 0; }
+  .controls { display: flex; flex-direction: column; justify-content: center; gap: 2rem; padding: 2.5rem 2rem; }
+  .presets { display: flex; gap: .25rem; padding: .3rem; border-radius: 999px; background: #2a2a2c; }
+  .presets button { flex: 1; min-height: 2.5rem; border: 0; border-radius: 999px; background: transparent; color: #ccc; font-size: .8125rem; transition: background .3s, color .3s; }
+  .presets button[aria-pressed="true"] { background: #f5f5f7; color: #1d1d1f; }
+  .controls label { display: grid; gap: .9rem; font-size: .875rem; }
+  .controls label > span { display: flex; justify-content: space-between; }
+  .controls label > span > span { color: #a1a1a6; font-variant-numeric: tabular-nums; }
+  .controls input { width: 100%; height: 1.75rem; margin: 0; accent-color: var(--glow); }
+  .controls > p { color: #86868b; font-size: .75rem; line-height: 1.9; }
+
+  /* Design: the head turns edge-on while the three notes take turns. */
+  .design { height: 280svh; background: #101011; --progress: 1; }
+  :global(html.preview-ready) .design { --progress: 0; }
+  .design-stage { position: sticky; top: 52px; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 4rem; height: calc(100svh - 52px); min-height: 560px; padding-inline: max(4rem, calc((100vw - 1180px) / 2)); overflow: hidden; }
+  .design-lamp { justify-self: center; font-size: min(4.6svh, 2.6vw); --head-turn: calc(var(--progress) * 80deg); --level: calc(1 - var(--progress) * .45); }
+  .design-copy h2 { font-size: clamp(2rem, 4vw, 3.5rem); }
+  .design-copy ol { display: grid; gap: 1.75rem; margin: 3rem 0 0; padding: 0; list-style: none; }
+  .design-copy li { display: grid; grid-template-columns: 2.5rem 1fr; padding-top: 1.25rem; border-top: 1px solid #333; transition: opacity .6s var(--motion-ease), border-color .6s; }
+  :global(html.preview-ready) .design-copy li:not(.is-active) { opacity: .3; }
+  .design-copy li.is-active { border-color: #f5f5f7; }
+  .design-copy li > span { color: #86868b; font-size: .75rem; font-variant-numeric: tabular-nums; line-height: 2; }
+  .design-copy h3 { font-size: 1.25rem; font-weight: 600; }
+  .design-copy li p { grid-column: 2; max-width: 26rem; margin-top: .6rem; color: #a1a1a6; font-size: .9375rem; line-height: 1.8; }
+
+  .finish { display: grid; justify-items: center; padding: 9rem 1.5rem 7rem; overflow: hidden; text-align: center; }
+  .finish-lamp { margin-top: 5rem; font-size: clamp(1.3rem, 2.6vw, 2.2rem); --level: .9; }
+  .finish-caption { min-height: 1.5rem; margin-top: 3rem; font-size: .875rem; }
+  .swatches { display: flex; gap: .35rem; margin-top: .75rem; }
+  .swatches button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border: 2px solid transparent; border-radius: 50%; background: none; transition: border-color .3s; }
+  .swatches button span { width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--swatch); box-shadow: inset 0 2px 3px #0006; transition: transform .3s var(--motion-ease); }
+  .swatches button:hover span { transform: scale(1.12); }
+  .swatches button[aria-pressed="true"] { border-color: #2997ff; }
+
+  .details { padding-block: 7rem 9rem; }
+  .details h2 { font-size: clamp(2rem, 3.4vw, 3rem); }
+  .bento { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.25rem; margin-top: 3rem; }
+  .card { display: flex; flex-direction: column; justify-content: flex-end; min-height: 380px; padding: 2rem; overflow: hidden; border-radius: 24px; background: #161617; }
+  .card:nth-child(n + 3) { min-height: 320px; }
+  .card:nth-child(3) { order: 4; }
+  .card h3 { font-size: 1.5rem; font-weight: 600; line-height: 1.35; }
+  .card > p:last-child { max-width: 24rem; margin-top: .6rem; color: #a1a1a6; font-size: .9375rem; line-height: 1.8; }
+  .big { margin-bottom: auto; font-size: clamp(3.5rem, 7vw, 6rem); font-weight: 650; line-height: 1; letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
+  .big small { margin-left: .5rem; color: #a1a1a6; font-size: 1.1rem; font-weight: 500; letter-spacing: 0; }
+  .dial { position: relative; width: 9rem; height: 9rem; margin-bottom: auto; border-radius: 50%; background: repeating-conic-gradient(#56565a 0 1deg, transparent 1deg 18deg); }
+  .dial i { position: absolute; inset: 1rem; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--body-hi), var(--body-lo)); box-shadow: 0 .5rem 1.5rem #000a; animation: dial-turn 6s var(--motion-ease) infinite alternate; }
+  .dial i::after { content: ''; position: absolute; left: calc(50% - 2px); top: .6rem; width: 4px; height: 1.1rem; border-radius: 2px; background: #1d1d1f; }
+  .meter { height: 6px; margin-block: 2rem; overflow: hidden; border-radius: 3px; background: #2f2f32; }
+  .meter span { display: block; height: 100%; border-radius: 3px; background: #63d06f; transition-duration: 1.6s !important; }
+  .sky { position: relative; height: 8rem; margin: -2rem -2rem auto; background: linear-gradient(90deg, #9fc4e8, #f0b27a 45%, #3a2f52 75%, #0d0d14); background-size: 300% 100%; animation: sky-drift 10s linear infinite alternate; }
+  .sky i { position: absolute; left: 50%; bottom: -5px; width: 10px; height: 10px; translate: -50% 0; border-radius: 50%; background: #fff; box-shadow: 0 0 0 6px #ffffff30; }
+  .card-sense h3 { margin-top: 2rem; }
+
+  .close { display: grid; justify-items: center; gap: 2rem; padding: 7rem 1.5rem 8rem; overflow: hidden; background: #161617; text-align: center; --level: clamp(0, calc(var(--view) * 2.4 - .35), 1); }
+  .close-lamp { margin-bottom: 2rem; font-size: clamp(1rem, 1.8vw, 1.5rem); }
+  .close h2 { position: relative; font-size: clamp(2rem, 3.5vw, 3.25rem); }
+  .close .blue-button { position: relative; min-height: 2.75rem; }
+  .oriel-footer { padding: 2rem max(5%, calc((100vw - 1180px) / 2)); background: #1d1d1f; color: #aaa; font-size: .75rem; line-height: 1.8; }
+  .oriel-footer > div { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #424245; }
+  @keyframes dial-turn { from { transform: rotate(-110deg); } to { transform: rotate(110deg); } }
+  @keyframes sky-drift { from { background-position: 0 0; } to { background-position: 100% 0; } }
+
+  @media (max-width: 900px) {
+    .wide { width: calc(100% - 3rem); }
+    .product-header { gap: 1rem; padding-inline: 1.25rem; }
+    .product-header nav { gap: 1rem; }
+    .stats { grid-template-columns: 1fr 1fr; gap: 2.5rem 1.5rem; margin-top: 4rem; }
+    .studio { grid-template-columns: 1fr; width: calc(100% - 2rem); }
+    .controls { padding: 2rem 1.5rem; }
+    .design-stage { grid-template-columns: 1fr; align-content: center; gap: 1.5rem; padding-inline: 1.5rem; }
+    .design-lamp { font-size: min(2.3svh, 4.5vw); }
+    .design-copy h2 { font-size: clamp(1.6rem, 6vw, 2.25rem); }
+    .design-copy ol { gap: .85rem; margin-top: 1.5rem; }
+    .design-copy li { padding-top: .85rem; }
+    .design-copy h3 { font-size: 1.05rem; }
+    .design-copy li p { font-size: .875rem; }
+    :global(html.preview-ready) .design-copy li:not(.is-active) p { display: none; }
+    .bento { grid-template-columns: 1fr; }
+    .card, .card:nth-child(n + 3) { min-height: 300px; }
+  }
+  @media (max-width: 600px) {
+    .product-header nav { display: none; }
+    .lead { font-size: 1rem; }
+    .intro { padding-block: 6rem 5rem; }
+    .studio-section { padding-bottom: 6rem; }
+    .finish { padding-top: 6rem; }
+    .details { padding-block: 5rem 6rem; }
+    .oriel-footer > div { flex-direction: column; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero, .design { height: auto; }
+    .hero-stage, .design-stage { position: relative; top: auto; }
+    .hero-stage { height: auto; min-height: 0; padding-block: 3rem; }
+    .hero-lamp { transform: none; }
+    .hero-step { position: static; translate: none; margin-top: 2rem; opacity: 1; transform: none; }
+    .hero-prelude { display: none; }
+    .hero-track { display: none; }
+    .design-stage { height: auto; min-height: 0; padding-block: 5rem; }
+    .design-lamp { --head-turn: 35deg; --level: 1; }
+  }
+</style>

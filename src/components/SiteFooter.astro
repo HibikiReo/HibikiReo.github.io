@@ -1,0 +1,18 @@
+---
+import { useLocale } from '../i18n';
+const { t, href } = useLocale(Astro.url);
+import Icon from './Icon.astro';
+import Engraved from './Engraved.astro';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer section-shell">
+  <div class="footer-top">
+    <a class="footer-wordmark" href={href('/#top')}>Hibiki’s notes.</a>
+    <p>{t("我在这里记下做界面、写代码时的想法。", "I write down what I think about while building interfaces and writing code.")}</p>
+    <a class="back-top" href="#top">{t("回到顶部", "Back to top")} <Icon name="arrow" size={15} /></a>
+  </div>
+  <div class="footer-bottom">
+    <span>© {year} Hibiki. Design & code by me.</span>
+    <span class="footer-note">{t("偶尔也用代码写点旋律。", "Sometimes I write a melody in code too.")}<Engraved class="footer-motif" options={{ lead: 0, measures: [{ events: [{ pitches: ['G4'], value: 4 }, { pitches: ['B4'], value: 4 }], barline: 'none' }] }} before={0.2} after={0.2} top={1} bottom={0.6} /></span>
+  </div>
+</footer>

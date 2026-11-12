@@ -1,0 +1,12 @@
+---
+import { glyphDefinitions } from '../lib/notation';
+import type { GlyphName } from '../lib/smufl';
+
+// Engraved Bravura outlines shared by every score on the page via <use href="#smufl-…">.
+const names: GlyphName[] = [
+  'gClef', 'accidentalSharp', 'timeSig3', 'timeSig4',
+  'noteheadBlack', 'noteheadHalf', 'noteheadWhole', 'augmentationDot',
+  'fermataAbove', 'repeatDots', 'dynamicPiano', 'metNoteQuarterUp',
+];
+---
+<svg class="music-definitions" width="0" height="0" aria-hidden="true" focusable="false"><defs set:html={glyphDefinitions(names)} /></svg>

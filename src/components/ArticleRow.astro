@@ -1,0 +1,25 @@
+---
+import { useLocale } from '../i18n';
+import Icon from './Icon.astro';
+import type { Article } from '../data/content';
+interface Props {
+  article: Article;
+  /** Under a year heading the row shows month and day only. */
+  shortDate?: boolean;
+  tags?: boolean;
+}
+const { article, shortDate = false, tags = false } = Astro.props;
+const { t, href } = useLocale(Astro.url);
+---
+<li class="note-row">
+  <a href={href(`/articles/${article.id}/`)}>
+    <time class="note-date" datetime={article.datetime}>{shortDate ? article.date.slice(5) : article.date}</time>
+    <div class="note-main">
+      <h3>{article.title}</h3>
+      <p>{article.summary}</p>
+      {tags && <div class="note-tags">{article.tags.map((tag) => <span>{tag}</span>)}</div>}
+    </div>
+    <div class="note-side"><span class={`category-label category-${article.visual}`}>{article.category}</span><span>{t("阅读约", "")} {article.readTime}</span></div>
+    <span class="note-arrow" aria-hidden="true"><Icon name="arrow" size={18} /></span>
+  </a>
+</li>

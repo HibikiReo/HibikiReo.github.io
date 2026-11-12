@@ -1,0 +1,184 @@
+---
+import { useLocale } from '../i18n';
+const { t, locale } = useLocale(Astro.url);
+import { getThemes, getTokenLabels, type WebThemeId } from '../data/web-themes';
+import ThemeStudyPreview from './ThemeStudyPreview.astro';
+interface Props { id: WebThemeId; }
+const { id } = Astro.props;
+const themeTokenLabels = getTokenLabels(locale);
+const theme = getThemes(locale).find((item) => item.id === id)!;
+const paletteStyle = [
+  ...Object.entries(theme.light).map(([key, value]) => `--theme-light-${key}:${value}`),
+  ...Object.entries(theme.dark).map(([key, value]) => `--theme-dark-${key}:${value}`),
+  `--theme-display:${theme.displayFont}`,
+  `--theme-radius:${theme.radius}`,
+].join(';');
+const declarations = (palette: typeof theme.light) => Object.entries(palette).map(([key, value]) => `  --theme-${key}: ${value};`).join('\n');
+const source = `.theme-root[data-design="${theme.id}"] {\n${declarations(theme.light)}\n  --theme-display: ${theme.displayFont};\n  --theme-radius: ${theme.radius};\n}\n\n.theme-root[data-design="${theme.id}"][data-mode="dark"] {\n${declarations(theme.dark)}\n}${theme.css ? `\n\n${theme.css}` : ''}`;
+const studyThemeIds: WebThemeId[] = ['liquid', 'soft', 'swiss', 'brutal', 'pixel', 'collage'];
+const notes = [
+  { label: t("适合什么", "Good for"), value: theme.fit },
+  { label: t("字体分工", "Type roles"), value: theme.type },
+  { label: t("排版重点", "Layout"), value: theme.layout },
+  { label: t("交互取舍", "Interaction"), value: theme.motion },
+];
+---
+<div class={`theme-showcase showcase-${id}`} style={paletteStyle}>
+  <div class="theme-controls"><span>{t("只切换当前预览", "Changes this preview only")}</span><fieldset class="theme-mode"><legend>{theme.name}{t("的亮暗模式", " light and dark mode")}</legend><label><input type="radio" name={`theme-mode-${id}`} value="light" checked={theme.defaultMode === 'light'} /><span>{t("亮色", "Light")}</span></label><label><input type="radio" name={`theme-mode-${id}`} value="dark" checked={theme.defaultMode === 'dark'} /><span>{t("暗色", "Dark")}</span></label></fieldset></div>
+  <div class="theme-preview-grid">
+    <figure class="theme-figure">
+      <div class={`theme-specimen specimen-${id}`}>
+        {studyThemeIds.includes(id) && <ThemeStudyPreview id={id} />}
+        {id === 'print' && <div class="print-layout">
+          <div class="sample-header"><span class="sample-brand">Hibiki’s journal.</span><span>{t("文章 / 作品", "Notes / Work")}</span></div>
+          <div class="print-main"><h3>{t("我的设计", "My notes on")}<br/>{t("与代码笔记。", "design and code.")}</h3><p>{t("记录做界面时的取舍，以及对应的前端实现。", "The choices I make while building interfaces, and the front-end code behind them.")}</p></div>
+          <div class="print-index"><span>{t("最近的笔记", "Recent notes")}</span><div><p>{t("网页动效：从按下反馈到弹簧动画", "Web motion: from press feedback to spring animation")}</p><p>{t("拿到设计稿后，我先做页面结构", "When I get a design file, I build the page structure first")}</p></div></div>
+        </div>}
+        {id === 'glass' && <div class="glass-layout">
+          <div class="glass-object" aria-hidden="true"></div>
+          <div class="glass-note"><h3>{t("按下之后，", "After a press,")}<br/>{t("界面怎么回应？", "how does the UI respond?")}</h3><p>{t("网页动效：从按下反馈到弹簧动画", "Web motion: from press feedback to spring animation")}</p><div class="glass-code"><code>feedback → state → motion</code><span>{t("设计与代码笔记", "Notes on design and code")}</span></div></div>
+          <div class="glass-toolbar"><span class="glass-brand">h.</span><div><span class="glass-current">{t("文章", "Notes")}</span><span>{t("作品", "Work")}</span><span>{t("关于", "About")}</span></div></div>
+        </div>}
+        {id === 'gallery' && <div class="gallery-layout">
+          <div class="sample-header"><span class="sample-brand">Hibiki / Works</span><span>{t("设计与代码", "Design and code")}</span></div>
+          <div class="gallery-main"><div class="gallery-copy"><h3>{t("我用代码", "I drew a set of")}<br/>{t("画了一组曲线。", "curves in code.")}</h3><p>{t("曲线习作", "Curve study")}<br/>{t("浏览器里的生成图形", "Generative graphics in the browser")}</p></div><div class="gallery-art"><svg viewBox="0 0 360 300" fill="none" aria-hidden="true">{Array.from({ length: 21 }, (_, index) => <path d={`M ${30 + index * 4} ${220 - index * 6} C ${80 + index * 4} ${-55 + index * 7}, ${240 - index * 4} ${390 - index * 5}, ${330 - index * 2} ${70 + index * 7}`} stroke="currentColor" stroke-width="1.5" opacity={.35 + index * .025} />)}</svg><span>Echoes / SVG study</span></div></div>
+        </div>}
+        {id === 'olive' && <div class="olive-layout">
+          <div class="sample-header"><span class="sample-brand">{t("Hibiki / 前端手记", "Hibiki / Front-end journal")}</span><span>{t("界面与组件", "UI and components")}</span></div>
+          <div class="olive-main"><div class="olive-index"><strong>{t("文章索引", "Index")}</strong><span class="olive-current">{t("交互动效", "Motion")}</span><span>{t("界面设计", "UI design")}</span><span>{t("开发笔记", "Dev notes")}</span></div><div class="olive-note"><h3>{t("我会先理清结构，", "I sort out the structure,")}<br/>{t("再拆分组件。", "then split components.")}</h3><pre><code>{'<article>\n  <header />\n  <section />\n</article>'}</code></pre><div class="olive-topics"><span>{t("内容", "Content")}</span><span>{t("样式", "Style")}</span><span>{t("行为", "Behavior")}</span></div></div></div>
+        </div>}
+      </div>
+      <figcaption>{theme.name}{t("的布局预览，导航项不会跳转页面。", " layout preview. The navigation items do not open pages.")}</figcaption>
+    </figure>
+    <dl class="theme-notes">{notes.map((note) => <div><dt>{note.label}</dt><dd>{note.value}</dd></div>)}</dl>
+  </div>
+  <ul class="theme-palette" aria-label={`${theme.name}${t('的主题色值', ' theme colors')}`}>
+    {themeTokenLabels.map(({ token, label }) => <li><span class="palette-chip" style={`background:var(--theme-${token})`} aria-hidden="true"></span><span class="palette-label">{label}</span><code class="palette-light">{theme.light[token]}</code><code class="palette-dark">{theme.dark[token]}</code></li>)}
+  </ul>
+  <details class="theme-css"><summary>{t("查看「", "CSS variables for ")}{theme.name}{t("」的 CSS 变量", "")}{theme.css && t("与基础样式", " and base styles")}</summary><pre tabindex="0" aria-label={`${theme.name}${t('的亮暗 CSS 变量', ' light and dark CSS variables')}`}><code>{source}</code></pre></details>
+</div>
+
+<style>
+  .theme-showcase { --theme-bg: var(--theme-light-bg); --theme-surface: var(--theme-light-surface); --theme-ink: var(--theme-light-ink); --theme-muted: var(--theme-light-muted); --theme-accent: var(--theme-light-accent); --theme-line: var(--theme-light-line); container-type: inline-size; margin-block: 1.75rem 2.5rem; }
+  .theme-showcase:has(input[value="dark"]:checked) { --theme-bg: var(--theme-dark-bg); --theme-surface: var(--theme-dark-surface); --theme-ink: var(--theme-dark-ink); --theme-muted: var(--theme-dark-muted); --theme-accent: var(--theme-dark-accent); --theme-line: var(--theme-dark-line); }
+  .theme-controls { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .theme-controls > span { font-size: .75rem; color: var(--ink-3); }
+  .theme-mode { display: flex; gap: .35rem; min-width: 0; margin: 0; padding: .2rem; border: 1px solid var(--rule-strong); border-radius: .6rem; }
+  .theme-mode legend, .theme-mode input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .theme-mode label { display: grid; place-items: center; min-width: 3.5rem; min-height: 2.75rem; padding: .5rem .9rem; border-radius: .4rem; font-size: .75rem; cursor: pointer; transition: background-color .2s, color .2s; }
+  .theme-mode label:has(input:checked) { background: var(--ink); color: var(--paper); }
+  .theme-mode label:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .theme-mode label:hover:not(:has(input:checked)) { background: var(--shade); }
+  .theme-preview-grid { display: grid; grid-template-columns: minmax(0, 1.65fr) minmax(14rem, 1fr); align-items: start; gap: 1.5rem; }
+  .theme-figure { min-width: 0; margin: 0; }
+  .theme-specimen { height: clamp(23rem, 28cqw, 32rem); overflow: hidden; border: 1px solid var(--theme-line); border-radius: var(--theme-radius); background: var(--theme-bg); color: var(--theme-ink); }
+  .theme-specimen :is(p, h3, pre) { margin: 0; }
+  .theme-specimen p { font-size: .75rem; line-height: 1.85; color: var(--theme-muted); overflow-wrap: normal; }
+  .theme-specimen h3 { font-family: var(--theme-display); font-size: clamp(1.6rem, 3.5cqw, 3.5rem); font-weight: 500; line-height: 1.5; letter-spacing: -.03em; }
+  .theme-figure figcaption { margin-top: .6rem; font-size: .6875rem; line-height: 1.8; color: var(--ink-3); }
+  .sample-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .sample-brand { font-size: .875rem; font-weight: 550; }
+  .sample-header > span:last-child { font-size: .625rem; color: var(--theme-muted); white-space: nowrap; }
+  .theme-notes { display: grid; gap: 1.1rem; margin: 0; }
+  .theme-notes dt { font-size: .75rem; color: var(--ink-3); }
+  .theme-notes dd { margin: .35rem 0 0; font-size: .875rem; line-height: 1.9; color: var(--ink-2); }
+  .theme-palette { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .75rem; margin: 1.5rem 0 0; padding: 0; list-style: none; }
+  .theme-palette li { display: grid; gap: .4rem; min-width: 0; }
+  .palette-chip { display: block; height: 1.75rem; border: 1px solid var(--rule-strong); border-radius: .25rem; }
+  .palette-label { font-size: .6875rem; color: var(--ink-3); }
+  .theme-palette code { font-family: var(--mono); font-size: .6875rem; color: var(--ink-2); }
+  .palette-dark { display: none; }
+  .theme-showcase:has(input[value="dark"]:checked) .palette-dark { display: block; }
+  .theme-showcase:has(input[value="dark"]:checked) .palette-light { display: none; }
+  .theme-css { margin-top: 1.5rem; border-block: 1px solid var(--rule-strong); }
+  .theme-css summary { min-height: 2.75rem; padding-block: .85rem; font-size: .8125rem; line-height: 1.8; cursor: pointer; }
+  .theme-css summary:hover { color: var(--accent); }
+  .theme-css summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  .theme-css pre { max-height: 28rem; margin: 0 0 1rem; padding: 1.25rem; overflow: auto; border-radius: .5rem; background: var(--code-ground); color: var(--code-ink); font-family: var(--mono); font-size: .75rem; line-height: 1.9; scrollbar-color: #999999 var(--code-ground); }
+  .theme-css pre:focus-visible { outline-offset: -3px; }
+
+  .print-layout { display: flex; flex-direction: column; height: 100%; padding: 1.75rem; }
+  .print-layout .sample-brand { font-family: var(--theme-display); font-size: 1.6rem; font-weight: 400; }
+  .print-main { margin-block: auto; padding-block: 1.5rem; }
+  .print-main h3 { font-weight: 400; line-height: 1.35; }
+  .print-main > p { margin-top: .85rem; }
+  .print-index { display: grid; grid-template-columns: 6rem minmax(0, 1fr); gap: 1rem; padding-top: 1rem; border-top: 1px solid var(--theme-line); }
+  .print-index > span { font-size: .625rem; color: var(--theme-accent); }
+  .print-index p { font-size: .6875rem; }
+  .print-index p + p { margin-top: .4rem; }
+
+  .glass-layout { position: relative; display: grid; place-items: center; height: 100%; padding: 4.5rem 2.5rem 1.5rem; isolation: isolate; }
+  .glass-object { position: absolute; top: 2.5rem; right: -1rem; z-index: -1; width: 9rem; height: 9rem; border-radius: 50%; background: #B77B60; }
+  .glass-note { width: 100%; padding: 1.75rem; border: 1px solid var(--theme-line); border-radius: 1rem; background: var(--theme-surface); box-shadow: 0 12px 30px -20px #00000040; }
+  .glass-note > p { margin-top: .75rem; }
+  .glass-code { display: grid; gap: .65rem; margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--theme-line); }
+  .glass-code code { font-family: var(--mono); font-size: .625rem; color: var(--theme-accent); }
+  .glass-code > span { font-size: .625rem; color: var(--theme-muted); }
+  .glass-toolbar { position: absolute; top: 1.1rem; left: 1.75rem; right: 1.75rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; padding: .5rem 1.25rem; border: 1px solid var(--theme-line); border-radius: 999px; background: var(--theme-surface); box-shadow: 0 8px 20px -12px #00000040; }
+  .glass-brand { font-family: var(--serif); font-size: 2rem; line-height: 1; }
+  .glass-toolbar > div { display: flex; gap: 1.1rem; font-size: .6875rem; color: var(--theme-muted); }
+  .glass-current { color: var(--theme-accent); font-weight: 600; }
+  @supports (backdrop-filter: blur(16px)) {
+    .glass-toolbar { background: color-mix(in srgb, var(--theme-surface) 88%, transparent); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+  }
+
+  .gallery-layout { display: flex; flex-direction: column; height: 100%; padding: 1.75rem; }
+  .gallery-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); flex: 1; align-items: center; gap: 1rem; margin-top: 1.5rem; }
+  .gallery-copy h3 { font-size: clamp(1.4rem, 2.5cqw, 2.75rem); }
+  .gallery-copy > p { margin-top: 1.5rem; font-size: .6875rem; }
+  .gallery-art { position: relative; align-self: stretch; display: flex; align-items: center; min-width: 0; overflow: hidden; border-radius: .35rem; background: var(--theme-surface); color: var(--theme-accent); }
+  .gallery-art svg { width: 100%; }
+  .gallery-art > span { position: absolute; left: 1rem; bottom: 1rem; font-size: .5rem; color: var(--theme-muted); }
+
+  .olive-layout { display: flex; flex-direction: column; height: 100%; padding: 1.75rem; }
+  .olive-main { display: grid; grid-template-columns: 5rem minmax(0, 1fr); flex: 1; align-items: center; gap: 1.5rem; margin-top: 1.75rem; }
+  .olive-index { display: grid; align-content: start; align-self: stretch; gap: 1rem; padding-top: .5rem; border-right: 1px solid var(--theme-line); font-size: .625rem; color: var(--theme-muted); }
+  .olive-index strong { color: var(--theme-ink); font-weight: 500; }
+  .olive-current { color: var(--theme-accent); font-weight: 600; }
+  .olive-note h3 { font-size: clamp(1.3rem, 2.4cqw, 2.5rem); }
+  .olive-note pre { margin-top: 1.25rem; padding: 1rem; overflow: auto; border: 1px solid var(--theme-line); border-radius: .3rem; background: var(--theme-surface); color: var(--theme-accent); font-family: var(--mono); font-size: .6875rem; line-height: 1.7; }
+  .olive-topics { display: flex; gap: 1rem; margin-top: 1rem; font-size: .625rem; color: var(--theme-muted); }
+
+  @container (max-width: 46rem) {
+    .theme-preview-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+    .theme-specimen { height: 24rem; }
+    .theme-specimen h3 { font-size: clamp(1.7rem, 6cqw, 2.8rem); }
+    .theme-notes { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 1.5rem; }
+    .theme-palette { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    .gallery-copy h3, .olive-note h3 { font-size: clamp(1.3rem, 4.5cqw, 2.25rem); }
+  }
+  @container (max-width: 24rem) {
+    .theme-controls { gap: .5rem; }
+    .theme-controls > span { font-size: .6875rem; }
+    .theme-mode label { min-width: 3rem; padding-inline: .65rem; }
+    .theme-specimen { height: 22rem; }
+    .theme-specimen p { font-size: .6875rem; }
+    .print-layout, .gallery-layout, .olive-layout { padding: 1.25rem; }
+    .sample-brand { font-size: .75rem; }
+    .sample-header > span:last-child { font-size: .5625rem; }
+    .print-layout .sample-brand { font-size: 1.3rem; }
+    .print-index { grid-template-columns: 4rem minmax(0, 1fr); gap: .5rem; }
+    .glass-layout { padding-inline: 1rem; }
+    .glass-note { padding: 1.25rem; }
+    .glass-toolbar { left: 1rem; right: 1rem; padding-inline: 1rem; }
+    .gallery-main { grid-template-columns: 1fr; gap: 1rem; margin-top: 1.25rem; }
+    .gallery-copy h3 br { display: none; }
+    .gallery-copy > p { margin-top: .6rem; }
+    .gallery-copy > p br { display: none; }
+    .gallery-art { min-height: 9rem; }
+    .gallery-art svg { position: absolute; top: 50%; height: 12rem; translate: 0 -50%; }
+    .gallery-art > span { bottom: .6rem; font-size: .5rem; }
+    .olive-main { grid-template-columns: 1fr; gap: 1rem; margin-top: 1.1rem; }
+    .olive-index { display: flex; gap: 1rem; padding: 0 0 .7rem; border-right: 0; border-bottom: 1px solid var(--theme-line); }
+    .olive-index strong { display: none; }
+    .olive-note pre { margin-top: 1rem; }
+    .theme-notes { grid-template-columns: 1fr; }
+    .theme-notes dd { font-size: .8125rem; }
+  }
+  @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+    .glass-toolbar { background: var(--theme-surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .theme-mode label { transition: none; }
+  }
+</style>

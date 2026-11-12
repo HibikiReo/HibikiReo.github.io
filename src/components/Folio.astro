@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import { engrave, staffLines } from '../lib/notation';
+import { motifMeasures } from '../data/motif';
+
+// The hero: the first, still unfinished page of Étude No. 001. The engraved motif is
+// the melody the play button synthesizes; the open second system is still being written.
+// SVG units are staff spaces. Staves are 48 spaces long.
+const STAFF = 48;
+const SYSTEM_TOPS = [4, 17, 30, 43];
+const n = (value: number) => Number(value.toFixed(3));
+
+const first = engrave({ clef: true, sharps: ['F5'], time: [3, 4], measures: motifMeasures, justify: STAFF });
+const second = engrave({ clef: true, sharps: ['F5'] });
+const [barOne, barTwo] = first.measures;
+const notes = Object.values(first.notes);
+
+// p, a crescendo through bar 1 and a diminuendo that settles before the fermata.
+const hairpin = (from: number, to: number, opening: boolean) => {
+  const [point, wide] = opening ? [from, to] : [to, from];
+  return `<path class="score-hairpin" d="M${n(wide)} 6.5L${n(point)} 7.05L${n(wide)} 7.6"/>`;
+};
+const expression = [
+  `<use href="#smufl-dynamicPiano" x="${n(notes[0].x - 1.2)}" y="7.6"/>`,
+  hairpin(notes[1].x - 0.3, barOne.end - 1.2, true),
+  hairpin(barTwo.start + 0.3, notes[7].x + 1.4, false),
+].join('');
+const playheadStops = [...notes.map((note) => n(note.x)), n(first.staffEnd)].join(' ');
+---
+<div class="folio">
+  <div class="folio-sheet folio-sheet-back" aria-hidden="true"></div>
+  <div class="folio-sheet folio-sheet-front">
+    <div class="folio-head">
+      <div class="folio-title">
+        <span class="micro-label">ÉTUDE NO. 001</span>
+        <span class="composition-title">A small beginning.</span>
+      </div>
+      <button class="play-motif" type="button" aria-label="播放练习曲：A small beginning" aria-pressed="false" title="播放一段小旋律">
+        <span class="play-symbol"><Icon name="play" size={16} /></span>
+        <span class="pause-symbol"><Icon name="pause" size={16} /></span>
+      </button>
+    </div>
+    <div class="folio-tempo" aria-hidden="true">
+      <span class="tempo-marking"><em>Andante</em><svg class="tempo-note" viewBox="-0.1 -2.85 1.5 3.5"><use href="#smufl-metNoteQuarterUp" /></svg><span>= 72</span></span>
+      <span class="folio-composer">HIBIKI</span>
+    </div>
+    <svg class="folio-score" viewBox={`-0.5 0 ${STAFF + 1} 48`} aria-hidden="true" focusable="false" data-playhead={playheadStops}>
+      <g class="score-system score-system-first" transform={`translate(0 ${SYSTEM_TOPS[0]})`}>
+        <g class="staff-lines" set:html={staffLines(0, STAFF)}></g>
+        <g class="engraving" set:html={first.markup + expression}></g>
+        <rect class="score-playhead" x="-0.07" y="-2.2" width="0.14" height="8.4" />
+      </g>
+      <g class="score-system score-system-open" transform={`translate(0 ${SYSTEM_TOPS[1]})`}>
+        <text class="score-measure-number" transform="scale(.1)" x="4" y="-14">3</text>
+        <g class="staff-lines" set:html={staffLines(0, STAFF)}></g>
+        <g class="engraving" set:html={second.markup}></g>
+        <rect class="score-caret" x={n(second.staffEnd + 0.4)} y="-0.8" width="0.16" height="5.6" />
+      </g>
+      {SYSTEM_TOPS.slice(2).map((top, index) => (
+        <g class:list={['score-system', 'score-system-blank', `score-system-blank-${index + 1}`]} transform={`translate(0 ${top})`}><g class="staff-lines" set:html={staffLines(0, STAFF)}></g></g>
+      ))}
+    </svg>
+    <div class="folio-foot"><span>H.É. 001</span><span>Composed in code · Est. 2026</span></div>
+  </div>
+</div>

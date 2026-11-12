@@ -1,0 +1,22 @@
+---
+import { useLocale } from '../i18n';
+const { t } = useLocale(Astro.url);
+import Icon from './Icon.astro';
+const source = `let focused = false;
+
+const focus = createSpring(value => {
+  preview.style.setProperty('--focus', String(value));
+});
+
+switchButton.addEventListener('click', () => {
+  focused = !focused;
+  focus.set(focused ? 1 : 0);
+});`;
+---
+<div class="interaction-demo" data-demo>
+  <div class="demo-toolbar"><span class="demo-file">interaction.ts</span><div class="demo-tabs" role="tablist" aria-label={t("交互示例视图", "Demo view")}><button id="demo-tab-preview" class="demo-tab" type="button" role="tab" aria-selected="true" aria-controls="demo-preview" data-demo-view="preview">{t("试试看", "Try it")}</button><button id="demo-tab-code" class="demo-tab" type="button" role="tab" aria-selected="false" aria-controls="demo-code" tabindex="-1" data-demo-view="code"><Icon name="code" size={14} />{t("看代码", "Code")}</button></div></div>
+  <div id="demo-preview" class="demo-panel demo-preview" role="tabpanel" aria-labelledby="demo-tab-preview">
+    <div class="demo-sample"><span class="demo-sample-tag">{t("交互笔记", "Interaction note")}</span><strong>A switch<br/>with a spring.</strong><div class="demo-control"><span><b>{t("专注模式", "Focus mode")}</b><small>{t("打开后，这张卡片会变成深色。", "Turn it on and this card goes dark.")}</small></span><button class="demo-switch" type="button" role="switch" aria-checked="false" aria-label={t("演示卡片的专注模式", "Focus mode for the demo card")}><span class="demo-switch-thumb"></span></button></div></div>
+  </div>
+  <div id="demo-code" class="demo-panel demo-code" role="tabpanel" aria-labelledby="demo-tab-code" tabindex="0" hidden><pre><code>{source}</code></pre></div>
+</div>

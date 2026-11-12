@@ -1,0 +1,243 @@
+---
+import { useLocale, localePaths } from '../../../i18n';
+const { t } = useLocale(Astro.url);
+export function getStaticPaths() { return localePaths(); }
+import PreviewLayout from '../../../layouts/PreviewLayout.astro';
+const objects = [
+  { id: 'bowl', name: t("浅口碗", "Shallow bowl"), title: t("盛一碗，平常的饭。", "For an ordinary bowl of rice."), text: t("口沿微微敞开，端握时指腹有落点。青灰釉面把颜色留得很轻，盛麦片、米饭，或一份热汤。", "The rim opens slightly and gives your fingertips somewhere to rest. The grey-green glaze keeps the color light. Use it for cereal, rice or hot soup."), material: t("青灰釉 / 敞口 / 日常餐食", "Grey-green glaze / Open rim / Everyday meals"), glaze: '#a9b3a8', shade: '#7d877d', inside: '#8f998f', body: 'M50 112 C58 222 140 250 200 250 C260 250 342 222 350 112 Z', rim: { cy: 112, rx: 150, ry: 22 } },
+  { id: 'plate', name: t("浅沿盘", "Low-rim plate"), title: t("给食物，留一点空地。", "A little room around the food."), text: t("盘沿低而舒展，让一片面包、几块水果都有自己的位置。用完之后，叠起来收回架上。", "The rim is low and wide, so a slice of bread and a few pieces of fruit each get their own space. Stack the plates and put them back on the shelf afterwards."), material: t("浅色釉 / 低沿 / 早餐与分享", "Pale glaze / Low rim / Breakfast and sharing"), glaze: '#dcd6c8', shade: '#b3ab99', inside: '#c9c2b2', body: 'M20 178 C62 224 140 236 200 236 C260 236 338 224 380 178 Z', rim: { cy: 178, rx: 180, ry: 26 } },
+  { id: 'dark', name: t("深釉碗", "Dark-glaze bowl"), title: t("深一点的颜色，温和的轮廓。", "A deeper color, a soft outline."), text: t("深釉保留了烧成时的颜色变化。和浅色器物摆在一起，桌面的颜色不会太轻。", "The dark glaze keeps the color shifts from the firing. Next to paler pieces it stops the table from looking washed out."), material: t("深色釉 / 圆腹 / 汤食与小菜", "Dark glaze / Round belly / Soups and small dishes"), glaze: '#4d4a40', shade: '#2d2b25', inside: '#3a372f', body: 'M82 122 C48 204 120 256 200 256 C280 256 352 204 318 122 Z', rim: { cy: 122, rx: 118, ry: 18 } },
+];
+---
+<PreviewLayout id="aesop">
+  <div class="still-site" id="top">
+    <header class="still-header"><a class="wordmark" href="#top" lang="en">Still.</a><nav aria-label={t("Still 主导航", "Still")}><a href="#objects">{t("日常器物", "Everyday pieces")}</a><a href="#making">{t("制作手记", "Making notes")}</a><a href="#care">{t("使用与养护", "Use and care")}</a></nav><a class="header-note" href="#making">{t("陶器与日常", "Pottery for every day")}</a></header>
+    <main id="main">
+      <section class="still-hero" data-scroll-scene aria-labelledby="still-title">
+        <div class="hero-stage">
+          <div class="hero-copy">
+            <h1 id="still-title" lang="en"><span class="line"><span>A quieter</span></span><span class="line"><span>everyday.</span></span></h1>
+            <p class="hero-chinese">{t("让每天用到的东西，", "Things you use every day")}<br />{t("慢慢变成熟悉的东西。", "slowly become familiar.")}</p>
+            <p class="hero-description">{t("手工拉坯，一窑一窑地烧。", "Thrown by hand and fired one kiln at a time.")}<br />{t("Still 做每天上桌的碗和盘。", "Still makes the bowls and plates that go on the table every day.")}</p>
+            <a class="outline-link" href="#objects">{t("看看日常器物", "See the pieces")}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a>
+          </div>
+          <div class="wheel-scene" data-loop role="img" aria-label={t("轮盘上的一团泥，随着滚动被拉成一只碗", "A lump of clay on the wheel, pulled into a bowl as you scroll")}>
+            <div class="clay"><span class="clay-mouth"></span></div>
+            <div class="wheel"></div>
+            <p class="wheel-caption" aria-hidden="true"><span>{t("泥团", "Clay")}</span><span class="wheel-meter"><i></i></span><span>{t("碗", "Bowl")}</span></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="still-intro"><p data-reveal>{t("好用的碗，用的时候不太会想起它。", "You rarely think about a good bowl while you are using it.")}</p><h2 data-reveal style="--i:1">{t("拿在手里合适，", "If it sits well in the hand,")}<br />{t("就会一直用下去。", "you keep using it.")}</h2><p data-reveal style="--i:2">{t("盛饭，装水果，", "Fill it with rice or fruit,")}<br />{t("洗干净以后放回架子上。", "wash it and put it back on the shelf.")}</p></section>
+
+      <section class="objects-section" id="objects" aria-labelledby="objects-title">
+        <div class="section-heading"><h2 id="objects-title" data-reveal>{t("常放在餐桌上的", "Three pieces")}<br />{t("三件器物。", "that stay on the table.")}</h2><p data-reveal style="--i:1">{t("从口沿、弧度与釉色，", "Rim, curve and glaze:")}<br />{t("认识每天会拿起的器物。", "a closer look at what you pick up every day.")}</p></div>
+        <div class="catalogue">
+          <div class="object-stage" data-reveal="clip">
+            {objects.map((object, index) => <svg class:list={['object-figure', { 'is-active': index === 0 }]} data-object-figure={object.id} viewBox="0 0 400 300" role="img" aria-label={`${object.name}${t('的侧面图', ', side view')}`}>
+              <ellipse cx="200" cy="268" rx="150" ry="12" fill="#00000022" />
+              <rect x="158" y={object.id === 'plate' ? 232 : 246} width="84" height="16" rx="3" fill={object.shade} />
+              <path d={object.body} fill={object.glaze} />
+              <path d={object.body} fill="url(#still-shade)" />
+              <ellipse cx="200" cy={object.rim.cy} rx={object.rim.rx} ry={object.rim.ry} fill={object.inside} stroke={object.glaze} stroke-width="5" />
+            </svg>)}
+            <svg width="0" height="0" aria-hidden="true"><defs><linearGradient id="still-shade" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".22" /><stop offset=".45" stop-color="#fff" stop-opacity="0" /><stop offset="1" stop-color="#000" stop-opacity=".28" /></linearGradient></defs></svg>
+            <p class="stage-caption">{t("器形示意，用 SVG 绘制", "Shape diagrams, drawn in SVG")}</p>
+          </div>
+          <div class="object-directory">
+            <div class="object-tabs" role="group" aria-label={t("选择查看的器物", "Choose a piece")}>{objects.map((object, index) => <button type="button" data-object={object.id} aria-pressed={index === 0}><span>{object.name}</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></button>)}</div>
+            <div class="object-notes" aria-live="polite">{objects.map((object, index) => <article data-object-note={object.id} hidden={index !== 0}><h3>{object.title}</h3><p>{object.text}</p><p class="material-note">{object.material}</p></article>)}</div>
+            <a class="reading-link" href="#care">{t("使用之前，读一读养护说明", "Read the care notes before first use")}</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="making-section" id="making" data-view-progress>
+        <div class="making-copy"><h2 data-reveal>{t("一只碗，大半时间在等。", "A bowl spends most of its making time waiting.")}</h2><p data-reveal style="--i:1">{t("拉坯只要几分钟。之后要等泥坯变干，修整圈足，施釉，再入窑，每一步都催不得。", "Throwing takes a few minutes. Then the clay has to dry, the foot is trimmed, the glaze goes on and the piece goes into the kiln. None of these steps can be hurried.")}</p><a class="outline-link" href="#craft-notes" data-reveal style="--i:2">{t("翻开制作手记", "Open the making notes")}<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a></div>
+        <figure class="kiln">
+          <svg viewBox="0 0 600 360" role="img" aria-label={t("烧成曲线：窑温缓慢升到 1230 度，保温后自然冷却", "Firing curve: the kiln climbs slowly to 1230 degrees, holds, then cools on its own")}>
+            <g stroke="#a39c8d" stroke-width="1"><path d="M40 320H580M40 230H580M40 140H580M40 50H580" stroke-dasharray="2 6" /></g>
+            <path class="kiln-curve" pathLength="1" d="M40 320 C120 300 170 250 220 170 C260 105 290 62 330 55 L400 55 C450 62 500 200 580 300" fill="none" stroke="#35372f" stroke-width="3" stroke-linecap="round" />
+            <g font-size="13" fill="#5d574b"><text x="40" y="345">{t("入窑", "In")}</text><text x="330" y="40">{t("1230°C 保温", "Hold at 1230°C")}</text><text x="540" y="345">{t("出窑", "Out")}</text></g>
+          </svg>
+          <figcaption>{t("一次釉烧，大约两天。", "One glaze firing takes about two days.")}</figcaption>
+        </figure>
+      </section>
+
+      <section class="craft-notes" id="craft-notes" aria-labelledby="craft-title"><h2 id="craft-title" data-reveal>{t("器物成形之前。", "Before a piece takes shape.")}</h2><ol><li data-reveal><span>{t("拉坯", "Throwing")}</span><h3>{t("找到轮廓", "Find the outline")}</h3><p>{t("让泥在轮盘中央稳定下来。双手从内与外同时施力，确定器壁的弧度和厚薄。", "Center the clay on the wheel. Both hands press from inside and outside at once to set the curve and thickness of the wall.")}</p></li><li data-reveal style="--i:1"><span>{t("修坯", "Trimming")}</span><h3>{t("调整重心", "Adjust the balance")}</h3><p>{t("待泥坯稍干，修出底足，减去多余的重量。端起来，才知道哪里还需要调整。", "Once the clay has dried a little, trim the foot and take off extra weight. You only learn what still needs adjusting when you lift it.")}</p></li><li data-reveal style="--i:2"><span>{t("烧成", "Firing")}</span><h3>{t("等窑冷下来", "Wait for the kiln to cool")}</h3><p>{t("素烧、施釉，再次入窑。等窑冷却之后，才能看见釉色最后的样子。", "Bisque fire, glaze, then fire again. The final glaze color shows only after the kiln has cooled.")}</p></li></ol></section>
+
+      <section class="care-section" id="care"><div><h2 data-reveal>{t("怎样用得", "How to make it")}<br />{t("久一点。", "last longer.")}</h2><p data-reveal style="--i:1">{t("从第一次清洗，到每一次收回碗柜。", "From the first wash to every time it goes back in the cupboard.")}<br />{t("具体使用限制，以器物随附的说明为准。", "For specific limits, follow the notes that come with each piece.")}</p></div><div class="care-questions" data-reveal><details open><summary>{t("第一次使用，怎样清洗？", "How do I wash it before first use?")}<span aria-hidden="true"></span></summary><div class="disclosure-body"><p>{t("用温水和中性洗涤剂清洗，充分冲净并晾干。不需要煮沸，也不建议用米汤浸泡。", "Wash with warm water and a mild detergent, rinse well and let it dry. You do not need to boil it, and soaking it in rice water is not recommended.")}</p></div></details><details><summary>{t("可以放进微波炉或洗碗机吗？", "Can it go in the microwave or dishwasher?")}<span aria-hidden="true"></span></summary><div class="disclosure-body"><p>{t("先查看该件器物的耐热与清洗说明。未明确标注适用时，请手洗，并避免骤冷骤热。", "Check the heat and washing notes for that piece. If it is not marked as suitable, wash it by hand and avoid sudden changes in temperature.")}</p></div></details><details><summary>{t("叠放时，怎样减少磕碰？", "How do I avoid chips when stacking?")}<span aria-hidden="true"></span></summary><div class="disclosure-body"><p>{t("擦干底足，轻拿轻放。器物之间可以垫一块薄布，较重的放在下面。发现裂纹或缺口后，先停止盛装食物与热饮。", "Dry the foot and handle the pieces gently. Put a thin cloth between them and keep the heavier ones underneath. If you find a crack or chip, stop using the piece for food and hot drinks.")}</p></div></details></div></section>
+      <section class="still-ending"><p data-reveal>{t("一只碗，也可以用很久。", "One bowl can last a long time.")}</p><a class="reading-link" href="#objects">{t("回到日常器物", "Back to the pieces")}</a></section>
+    </main>
+    <footer class="still-footer preview-footer"><div class="footer-top"><a href="#top" class="footer-mark" lang="en">Still.</a><div><p>{t("陶器与日常", "Pottery for every day")}</p><p>{t("慢慢制作，反复使用。", "Made slowly, used often.")}</p></div><nav aria-label={t("页脚导航", "Footer")}><a href="#objects">{t("日常器物", "Everyday pieces")}</a><a href="#making">{t("制作手记", "Making notes")}</a><a href="#care">{t("使用与养护", "Use and care")}</a></nav></div><div class="footer-bottom"><span>{t("Still 为虚构陶器品牌，器物与图示均由代码绘制。", "Still is a fictional pottery brand. The pieces and diagrams are drawn in code.")}</span><span>{t("Hibiki / 品牌官网设计习作", "Hibiki / A brand site study")}</span></div></footer>
+  </div>
+</PreviewLayout>
+<style>
+  .still-site { overflow-x: clip; background: #e8e6e0; color: #302e2a; --line: #bdbbb3; --muted: #69665e; }
+  .still-header { display: flex; align-items: center; gap: 4rem; min-height: 90px; padding: .75rem 4.5%; border-bottom: 1px solid #cfcdc5; }
+  .wordmark { font-family: 'Instrument Serif', Georgia, serif; font-size: 3.25rem; letter-spacing: -.035em; line-height: 1; }
+  .still-header nav { display: flex; gap: 2.5rem; font-size: .8125rem; }
+  .still-header nav a { padding-block: 1rem; background: linear-gradient(currentColor, currentColor) 0 80% / 0 1px no-repeat; transition: background-size .5s var(--motion-ease); }
+  .still-header nav a:hover { background-size: 100% 1px; }
+  .header-note { margin-left: auto; font-size: .75rem; }
+
+  /* Hero: scrolling throws the lump of clay into a bowl. */
+  .still-hero { height: 230svh; --progress: 1; }
+  :global(html.preview-ready) .still-hero { --progress: 0; }
+  .hero-stage { position: sticky; top: 0; display: grid; grid-template-columns: .85fr 1.15fr; height: 100svh; min-height: 640px; overflow: hidden; }
+  .hero-copy { display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 4rem 8% 4rem 13%; }
+  .hero-copy h1 { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; font-size: clamp(4rem, 6.8vw, 6.5rem); line-height: .98; letter-spacing: -.03em; }
+  .hero-copy .line { display: block; overflow: hidden; padding-bottom: .12em; }
+  .hero-copy .line > span { display: block; animation: line-rises 1.3s var(--motion-ease) both; }
+  .hero-copy .line:nth-child(2) > span { animation-delay: .15s; }
+  .hero-chinese, .hero-description, .hero-copy .outline-link { animation: fade-up 1.2s var(--motion-ease) both; }
+  .hero-chinese { margin-top: 2rem; font-size: 1.35rem; line-height: 1.7; font-family: 'Songti SC', 'Noto Serif CJK SC', SimSun, serif; animation-delay: .4s; }
+  .hero-description { margin-top: 1.5rem; color: #646057; font-size: .875rem; line-height: 1.9; animation-delay: .55s; }
+  .hero-copy .outline-link { animation-delay: .7s; }
+  .outline-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 3rem; min-height: 3.5rem; margin-top: 2rem; padding: .8rem 1.25rem; border: 1px solid #888479; background: linear-gradient(#36342f, #36342f) 0 0 / 0 100% no-repeat; font-size: .8125rem; transition: background-size .6s var(--motion-ease), color .4s; }
+  .outline-link:hover { background-size: 100% 100%; color: #f4f3ef; }
+  .outline-link svg { transition: transform .4s var(--motion-ease); }
+  .outline-link:hover svg { transform: translateX(5px); }
+  .wheel-scene { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 22svh; background: #d6d1c5; font-size: clamp(.9rem, 1.55vw, 1.5rem); }
+  .clay { position: relative; z-index: 1; width: calc(7em + var(--progress) * 9em); height: calc(5.5em + var(--progress) * 2.5em); margin-bottom: -.9em; border-radius: calc(50% - var(--progress) * 44%) calc(50% - var(--progress) * 44%) 50% 50% / calc(60% - var(--progress) * 50%) calc(60% - var(--progress) * 50%) calc(40% + var(--progress) * 55%) calc(40% + var(--progress) * 55%); background: repeating-linear-gradient(180deg, #0000 0 .34em, #0000000d .34em .42em), linear-gradient(90deg, #b9a48c, #a08a72 55%, #7f6b57); }
+  .clay-mouth { position: absolute; left: 3%; right: 3%; top: -.9em; height: 1.8em; border-radius: 50%; background: #8a7561; box-shadow: inset 0 .3em .5em #0003; transform: scale(var(--progress)); }
+  .wheel { width: 22em; height: 3.4em; border-radius: 50%; background: repeating-conic-gradient(#8f897c 0 8deg, #9a9487 8deg 16deg); box-shadow: 0 .5em 0 #77726a, 0 1.4em 2em #0003; animation: wheel-spins 2.4s linear infinite; }
+  .wheel-caption { position: absolute; left: 12%; right: 12%; bottom: 9svh; display: flex; align-items: center; gap: 1rem; color: #5d574b; font-size: .75rem; }
+  .wheel-meter { flex: 1; height: 1px; background: #a39c8d; }
+  .wheel-meter i { display: block; height: 100%; background: #302e2a; transform-origin: left; transform: scaleX(var(--progress)); }
+
+  .still-intro { padding: 9rem 1.5rem; text-align: center; }
+  .still-intro p { color: var(--muted); font-size: .9375rem; line-height: 1.95; }
+  .still-intro h2 { margin-block: 2rem; font-size: clamp(2rem, 3.5vw, 3.25rem); line-height: 1.65; letter-spacing: .025em; }
+  h2 { font-family: 'Songti SC', 'Noto Serif CJK SC', SimSun, serif; font-weight: 400; font-size: clamp(2rem, 3vw, 2.75rem); line-height: 1.6; }
+  :global(html.preview-ready) .still-site [data-reveal] { transition-duration: 1.4s; }
+  .objects-section { padding: 1rem 6% 7rem; }
+  .section-heading { display: flex; align-items: end; justify-content: space-between; gap: 3rem; margin-bottom: 3.5rem; }
+  .section-heading > p { color: var(--muted); font-size: .875rem; line-height: 1.9; }
+  .catalogue { display: grid; grid-template-columns: 1.45fr 1fr; gap: 7%; }
+  .object-stage { position: relative; display: grid; place-items: center; min-height: 570px; overflow: hidden; background: #d6d1c5; }
+  .object-figure { grid-area: 1 / 1; width: min(78%, 34rem); opacity: 0; transform: translateY(2.5rem) scale(.94); transition: opacity .8s var(--motion-ease), transform 1.1s var(--motion-ease); }
+  .object-figure.is-active { opacity: 1; transform: none; transition-delay: .15s; }
+  .stage-caption { position: absolute; left: 1.25rem; bottom: 1.25rem; color: #5d574b; font-size: .6875rem; }
+  .object-directory { align-self: center; padding-block: 1rem; }
+  .object-tabs { border-top: 1px solid var(--line); }
+  .object-tabs button { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 4.5rem; padding: 1rem .25rem; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: #736e64; text-align: left; font-size: 1rem; transition: color .4s, padding-left .6s var(--motion-ease); }
+  .object-tabs button svg { opacity: 0; transform: translateX(-8px); transition: opacity .4s, transform .6s var(--motion-ease); }
+  .object-tabs button[aria-pressed="true"] { padding-left: 1rem; color: #27241e; }
+  .object-tabs button[aria-pressed="true"] svg { opacity: 1; transform: translateX(0); }
+  .object-notes { min-height: 240px; margin-top: 2.5rem; }
+  .object-notes h3 { font-family: 'Songti SC', SimSun, serif; font-size: 1.35rem; font-weight: 400; line-height: 1.6; }
+  .object-notes article > p { max-width: 29rem; margin-top: 1rem; color: #68645b; font-size: .875rem; line-height: 2; }
+  .object-notes article > .material-note { margin-top: 1.5rem; color: #787265; font-size: .6875rem; }
+  .reading-link { display: inline-flex; align-items: center; min-height: 2.75rem; border-bottom: 1px solid #81796c; font-size: .8125rem; transition: color .3s; }
+  .reading-link:hover { color: #81796c; }
+  .making-section { display: grid; grid-template-columns: 1fr 1.4fr; background: #cfc9bd; }
+  .making-copy { display: flex; flex-direction: column; align-items: start; justify-content: center; padding: 5rem 14%; }
+  .making-copy h2 { font-size: clamp(1.75rem, 2.6vw, 2.5rem); }
+  .making-copy > p { max-width: 26rem; margin-top: 1.5rem; color: #5d574b; font-size: .875rem; line-height: 2; }
+  .kiln { display: flex; flex-direction: column; justify-content: center; min-height: 600px; padding: 4rem 8%; background: #c4bdaf; }
+  .kiln svg { width: 100%; height: auto; overflow: visible; }
+  .kiln-curve { stroke-dasharray: 1; stroke-dashoffset: calc(1 - clamp(0, calc(var(--view, 1) * 2.6 - .7), 1)); }
+  .kiln figcaption { margin-top: 2rem; color: #5d574b; font-size: .75rem; }
+  .craft-notes { padding: 6rem 6% 7rem; }
+  .craft-notes > h2 { margin-bottom: 3rem; font-size: 2rem; }
+  .craft-notes ol { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4rem; margin: 0; padding: 0; list-style: none; }
+  .craft-notes li { border-top: 1px solid var(--line); padding-top: 1.25rem; }
+  .craft-notes li > span { color: #7a7365; font-size: .75rem; }
+  .craft-notes h3 { margin-top: 1.75rem; font-family: 'Songti SC', SimSun, serif; font-size: 1.4rem; font-weight: 400; }
+  .craft-notes li > p { max-width: 25rem; margin-top: 1rem; color: #68645b; font-size: .875rem; line-height: 2; }
+  .care-section { display: grid; grid-template-columns: 1fr 1.2fr; gap: 7%; padding: 5rem 6% 7rem; border-top: 1px solid #c8c4ba; }
+  .care-section > div > p { margin-top: 2rem; color: var(--muted); font-size: .8125rem; line-height: 1.9; }
+  .care-questions details { border-bottom: 1px solid var(--line); }
+  .care-questions details:first-child { border-top: 1px solid var(--line); }
+  .care-questions summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 5rem; padding-block: 1.2rem; list-style: none; font-size: .875rem; }
+  .care-questions summary::-webkit-details-marker { display: none; }
+  .care-questions summary > span { position: relative; flex-shrink: 0; width: 14px; height: 14px; }
+  .care-questions summary > span::before, .care-questions summary > span::after { content: ''; position: absolute; top: 6px; left: 0; width: 14px; height: 1px; background: currentColor; transition: transform .5s var(--motion-ease); }
+  .care-questions summary > span::after { transform: rotate(90deg); }
+  .care-questions details[open] summary > span::after { transform: rotate(0); }
+  .disclosure-body { padding: 0 2rem 1.5rem 0; color: #68645b; font-size: .875rem; line-height: 2; }
+  .still-ending { display: grid; justify-items: center; gap: 1rem; padding: 4rem 1.5rem 7rem; text-align: center; }
+  .still-ending > p { font-family: 'Songti SC', SimSun, serif; font-size: clamp(1.65rem, 3vw, 2.5rem); }
+  .still-footer { padding: 4rem 6%; background: #35372f; color: #f0eee7; }
+  .footer-top { display: flex; align-items: center; gap: 5rem; padding-bottom: 3rem; }
+  .footer-mark { font-family: 'Instrument Serif', Georgia, serif; font-size: 7rem; line-height: 1; letter-spacing: -.035em; }
+  .footer-top > div { font-size: .8125rem; line-height: 2; color: #c9c7bc; }
+  .footer-top nav { display: flex; gap: 2.5rem; margin-left: auto; font-size: .8125rem; }
+  .footer-bottom { display: flex; justify-content: space-between; gap: 2rem; padding-top: 1.5rem; border-top: 1px solid #7c7c6d; color: #c9c7bc; font-size: .6875rem; line-height: 1.8; }
+  @keyframes line-rises { from { transform: translateY(110%); } to { transform: translateY(0); } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes wheel-spins { to { transform: rotate(1turn); } }
+  /* The wheel is an ellipse; spin its pattern instead of the box. */
+  .wheel { animation: none; position: relative; overflow: hidden; background: none; }
+  .wheel::before { content: ''; position: absolute; left: 0; top: 50%; width: 22em; height: 22em; translate: 0 -50%; border-radius: 50%; background: repeating-conic-gradient(#8f897c 0 8deg, #9a9487 8deg 16deg); animation: wheel-spins 2.4s linear infinite; }
+  @media (max-width: 1000px) {
+    .still-header { gap: 2.5rem; }
+    .still-header nav { gap: 1.5rem; }
+    .hero-copy { padding-left: 8%; padding-right: 5%; }
+    .hero-copy h1 { font-size: 4.25rem; }
+    .hero-chinese { font-size: 1.2rem; }
+    .outline-link { gap: 1.5rem; }
+    .catalogue { gap: 5%; }
+    .object-stage { min-height: 480px; }
+    .making-copy { padding-inline: 10%; }
+    .craft-notes ol { gap: 2.5rem; }
+    .footer-top { gap: 3rem; }
+    .footer-top nav { flex-direction: column; gap: 1rem; }
+  }
+  @media (max-width: 700px) {
+    .still-header { flex-wrap: wrap; gap: .5rem 1.5rem; padding: 1rem 1.5rem; min-height: 100px; }
+    .wordmark { font-size: 2.75rem; }
+    .still-header nav { order: 3; justify-content: space-between; width: 100%; gap: 1rem; font-size: .75rem; }
+    .still-header nav a { padding-block: .75rem .25rem; }
+    .header-note { font-size: .6875rem; }
+    .still-hero { height: 200svh; }
+    .hero-stage { grid-template-columns: 1fr; grid-template-rows: auto 1fr; min-height: 620px; }
+    .hero-copy { padding: 2rem 1.5rem 1.5rem; }
+    .hero-copy h1 { font-size: clamp(3rem, 13vw, 4.25rem); }
+    .hero-chinese { margin-top: 1rem; font-size: 1.05rem; }
+    .hero-description, .hero-copy .outline-link { display: none; }
+    .wheel-scene { padding-bottom: 5.5rem; font-size: clamp(.75rem, 3.6vw, 1rem); }
+    .wheel-caption { bottom: 2rem; }
+    .still-intro { padding-block: 5rem; }
+    .still-intro p { font-size: .8125rem; }
+    .still-intro h2 { font-size: 1.8rem; }
+    .objects-section { padding: 1rem 1.5rem 4rem; }
+    .section-heading { align-items: start; flex-direction: column; gap: 1.5rem; margin-bottom: 2rem; }
+    .section-heading h2 { font-size: 1.85rem; }
+    .catalogue { grid-template-columns: 1fr; gap: 1.5rem; }
+    .object-stage { min-height: 340px; }
+    .object-tabs { display: flex; }
+    .object-tabs button, .object-tabs button[aria-pressed="true"] { justify-content: center; gap: .5rem; min-height: 3.5rem; padding-left: .25rem; font-size: .875rem; }
+    .object-tabs button svg { display: none; }
+    .object-tabs button[aria-pressed="true"] { border-bottom-color: #302e2a; background: #dedbd2; }
+    .object-notes { min-height: 0; margin-top: 2rem; margin-bottom: 1rem; }
+    .making-section { grid-template-columns: 1fr; }
+    .making-copy { padding: 3rem 1.5rem; }
+    .making-copy h2 { font-size: 1.8rem; }
+    .kiln { min-height: 0; padding: 3rem 1.5rem; }
+    .craft-notes { padding: 4rem 1.5rem; }
+    .craft-notes > h2 { font-size: 1.8rem; margin-bottom: 2rem; }
+    .craft-notes ol { grid-template-columns: 1fr; gap: 2rem; }
+    .craft-notes h3 { margin-top: 1rem; }
+    .care-section { grid-template-columns: 1fr; gap: 2.5rem; padding: 3rem 1.5rem; }
+    .care-section h2 { font-size: 1.8rem; }
+    .care-section > div > p { margin-top: 1rem; }
+    .care-questions summary { min-height: 4.75rem; font-size: .8125rem; }
+    .still-ending { padding-block: 3rem 5rem; }
+    .still-footer { padding: 3rem 1.5rem; }
+    .footer-top { align-items: start; flex-wrap: wrap; gap: 2rem; }
+    .footer-mark { font-size: 5rem; }
+    .footer-top nav { flex-direction: row; flex-wrap: wrap; width: 100%; margin-left: 0; gap: 1.5rem; }
+    .footer-bottom { flex-direction: column; gap: 1rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .still-hero { height: auto; }
+    .hero-stage { position: relative; }
+    .wheel::before { animation: none; }
+  }
+  :global(html[lang="en"]) .still-site :is(h2, h3, .hero-chinese, .still-ending > p) { font-family: 'Instrument Serif', Georgia, serif; line-height: 1.25; letter-spacing: 0; }
+  :global(html[lang="en"]) .still-site h2 { font-size: clamp(2.25rem, 3.6vw, 3.25rem); }
+  :global(html[lang="en"]) .still-site :is(h3, .hero-chinese) { font-size: 1.6rem; }
+</style>

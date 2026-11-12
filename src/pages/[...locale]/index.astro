@@ -1,0 +1,70 @@
+---
+import { useLocale, localePaths } from '../../i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import SiteFooter from '../../components/SiteFooter.astro';
+import Icon from '../../components/Icon.astro';
+import InteractivePreview from '../../components/InteractivePreview.astro';
+import ArticleVisual from '../../components/ArticleVisual.astro';
+import ArticleRow from '../../components/ArticleRow.astro';
+import { getArticles } from '../../data/content';
+export function getStaticPaths() { return localePaths(); }
+const { t, href, locale } = useLocale(Astro.url);
+
+// Articles are stored newest first: one lead note, then the next three as rows.
+const articles = getArticles(locale);
+const [lead, ...rest] = articles;
+const latest = rest.slice(0, 3);
+const demoNote = articles.find((article) => article.id === 'natural-web-motion')!;
+const topics = [...new Set(articles.map((article) => article.category))].join(' / ');
+---
+<BaseLayout>
+  <div class="page-progress" aria-hidden="true"></div>
+  <SiteHeader />
+  <main id="main">
+    <section class="intro section-shell" id="top" aria-labelledby="intro-title">
+      <p class="kicker"><span class="small-dot"></span>{t("Hibiki 的笔记", "Hibiki's notes")}</p>
+      <h1 id="intro-title">{t("我做前端，把界面设计、交互和代码里遇到的问题记在这里。", "I build front ends and write down what I run into in interface design, interaction and code.")}</h1>
+      <dl class="intro-facts">
+        <div><dt>{t("文章", "Notes")}</dt><dd>{articles.length}</dd></div>
+        <div><dt>{t("最近更新", "Last updated")}</dt><dd><time datetime={lead.datetime}>{lead.date}</time></dd></div>
+        <div><dt>{t("写些什么", "Topics")}</dt><dd>{topics}</dd></div>
+      </dl>
+    </section>
+
+    <section class="latest section-shell" id="latest" aria-labelledby="latest-title">
+      <div class="list-heading"><h2 id="latest-title">{t("最新文章", "Latest notes")}</h2><a class="text-link" href={href('/notes/')}>{t(`全部 ${articles.length} 篇`, `All ${articles.length} notes`)} <Icon name="arrow" size={16} /></a></div>
+      <a class="lead-note" href={href(`/articles/${lead.id}/`)}>
+        <ArticleVisual variant={lead.visual} />
+        <div class="lead-copy">
+          <div class="article-meta"><span class={`category-label category-${lead.visual}`}>{lead.category}</span><time datetime={lead.datetime}>{lead.date}</time><span>{t("阅读约", "")} {lead.readTime}</span></div>
+          <h3>{lead.title}</h3>
+          <p>{lead.summary}</p>
+          <span class="lead-read">{t("阅读全文", "Read this note")} <Icon name="arrow" size={16} /></span>
+        </div>
+      </a>
+      <ol class="note-list">{latest.map((article) => <ArticleRow article={article} />)}</ol>
+    </section>
+
+    <section class="demo-band section-shell" aria-labelledby="demo-title">
+      <div class="demo-band-copy">
+        <p class="kicker"><span class="small-dot"></span>{t("文章里的示例", "An example from the notes")}</p>
+        <h2 id="demo-title">{t("按一下这个开关", "Press this switch")}</h2>
+        <p>{t(`它来自《${demoNote.title}》。连续点几次，开关会从当前位置直接转向；右上角可以切到代码。`, `It comes from "${demoNote.title}". Click it a few times in a row and the switch turns around from wherever it is. The tab at the top right shows the code.`)}</p>
+        <a class="text-link" href={href(`/articles/${demoNote.id}/`)}>{t("读这篇文章", "Read the note")} <Icon name="arrow" size={16} /></a>
+      </div>
+      <InteractivePreview />
+    </section>
+
+    <section class="profile section-shell" id="about" aria-labelledby="about-title">
+      <h2 id="about-title">{t("关于", "About")}</h2>
+      <div class="profile-text">
+        <p>{t("我叫 Hibiki，是一名前端开发者，平时也喜欢研究设计。做页面时，我会反复看排版是否舒服、代码是否易读，以及操作有没有及时的反馈。", "I'm Hibiki, a front-end developer who also likes studying design. When I build a page I keep checking whether the layout is comfortable to read, whether the code is easy to follow, and whether each action gets a prompt response.")}</p>
+        <p>{t("这里记把想法做成网页时遇到的技术问题。结果会留下，实现时试过哪些方法、为什么这样取舍，也想一起写清楚。", "This is where I keep the technical problems I met while turning ideas into web pages. I keep the results, and I also try to write down which approaches I tried and why I chose the one I did.")}</p>
+        <button class="copy-link" type="button"><Icon name="copy" size={16} />{t("复制博客链接", "Copy blog link")}</button>
+      </div>
+    </section>
+  </main>
+  <SiteFooter />
+  <div class="toast" role="status" aria-live="polite"></div>
+</BaseLayout>

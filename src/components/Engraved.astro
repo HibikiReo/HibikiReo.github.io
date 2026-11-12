@@ -1,0 +1,31 @@
+---
+import { engrave, staffLines, type ScoreOptions } from '../lib/notation';
+
+// A short engraved fragment on a five-line staff. Glyph outlines come from <MusicDefs />.
+// Coordinates are staff spaces, so the SVG scales with whatever size CSS gives it.
+interface Props {
+  options: ScoreOptions;
+  /** Empty staff before x = 0. */
+  before?: number;
+  /** Empty staff after the content. */
+  after?: number;
+  /** Room above the top line and below the bottom line. */
+  top?: number;
+  bottom?: number;
+  /** Draw the staff lines; off when CSS draws a longer running staff behind the notes. */
+  staff?: boolean;
+  class?: string;
+}
+
+const { options, before = 0, after = 0, top = 2, bottom = 2, staff = true, class: className } = Astro.props;
+const score = engrave(options);
+const from = -before;
+const to = score.staffEnd + after;
+const n = (value: number) => Number(value.toFixed(3));
+---
+<svg
+  class:list={['engraved', className]}
+  viewBox={`${n(from)} ${n(-top)} ${n(to - from)} ${n(4 + top + bottom)}`}
+  aria-hidden="true"
+  focusable="false"
+>{staff && <g class="staff-lines" set:html={staffLines(from, to)}></g>}<g class="engraving" set:html={score.markup}></g></svg>

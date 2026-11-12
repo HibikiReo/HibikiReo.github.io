@@ -1,0 +1,254 @@
+---
+import { useLocale, localePaths } from '../../../i18n';
+const { t } = useLocale(Astro.url);
+export function getStaticPaths() { return localePaths(); }
+import PreviewLayout from '../../../layouts/PreviewLayout.astro';
+const tasks = [
+  { id: 'REL-42', title: t("合并反馈时保留原始链接", "Keep source links when merging feedback"), description: t("同一个问题可能来自邮件、访谈和群聊。合并后保留每一条来源，让后续讨论有据可查。", "The same problem can arrive by email, in an interview and in a group chat. Keep every source after the merge so later discussion can point back to it."), person: t("林岚", "Lin Lan"), state: 'progress', tag: t("体验", "UX") },
+  { id: 'REL-43', title: t("让空收件箱说明下一步", "Have the empty inbox explain the next step"), description: t("第一次打开收件箱时，说明可以从哪里收集反馈，并展示一条完整的示例。", "On first open, say where feedback can be collected from and show one complete example."), person: t("许知", "Xu Zhi"), state: 'todo', tag: t("设计", "Design") },
+  { id: 'REL-44', title: t("筛选后保留列表位置", "Keep the list position after filtering"), description: t("返回列表时恢复原来的筛选与滚动位置，避免重复寻找刚才的任务。", "Restore the filter and scroll position on return, so nobody hunts for the task they just left."), person: t("陈放", "Chen Fang"), state: 'progress', tag: t("交互", "Interaction") },
+  { id: 'REL-45', title: t("补齐键盘选择与焦点状态", "Finish keyboard selection and focus states"), description: t("让列表选择、详情打开和关闭都可以用键盘完成，焦点始终清楚可见。", "Selecting a row and opening or closing the detail panel should all work from the keyboard, with focus always visible."), person: t("陈放", "Chen Fang"), state: 'todo', tag: t("无障碍", "A11y") },
+  { id: 'REL-46', title: t("整理本次迭代的验收清单", "Write the acceptance checklist for this cycle"), description: t("把每项改动对应到具体的验收条件，在发布之前逐项确认。", "Match every change to a concrete acceptance condition and confirm each one before release."), person: t("何嘉", "He Jia"), state: 'progress', tag: t("发布", "Release") },
+  { id: 'REL-38', title: t("统一反馈标签的命名", "Unify feedback label names"), description: t("合并同义标签，整理一份团队都能读懂的分类说明。已完成并归档。", "Merge labels that mean the same thing and write a category guide the whole team can read. Done and archived."), person: t("何嘉", "He Jia"), state: 'done', tag: t("整理", "Cleanup") },
+];
+const columns = [{ id: 'todo', name: t("待开始", "Todo") }, { id: 'progress', name: t("进行中", "In progress") }, { id: 'done', name: t("已完成", "Done") }];
+const initial = (name: string) => (/^[a-z]/i.test(name) ? name[0] : name.slice(-1));
+const statement = [t("讨论记在任务里，", "Discussion stays on the task."), t("进展打开就能看到。", "Progress is there when you open it.")];
+const statementLength = statement.join('').length;
+---
+<PreviewLayout id="linear">
+  <div class="relay-site" id="top">
+    <header class="relay-header shell"><a class="relay-brand" href="#top"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m4 16 6-10h6M8 20l6-10h6" /></svg>Relay</a><nav aria-label={t("Relay 主导航", "Relay")}><a href="#workspace">{t("产品", "Product")}</a><a href="#workflow">{t("工作方式", "How it works")}</a><a href="#planning">{t("迭代计划", "Cycle plan")}</a></nav><a class="header-button" href="#workspace">{t("打开工作台", "Open the workspace")}</a></header>
+    <main id="main">
+      <section class="hero shell"><div class="hero-glow" data-loop aria-hidden="true"></div><h1><span class="line"><span>{t("把产品的下一步，", "What the product needs next,")}</span></span><span class="line"><span>{t("放在同一个地方。", "kept in one place.")}</span></span></h1><div class="hero-bottom"><p>{t("把用户反馈、任务和交付记录放在一起。", "User feedback, tasks and delivery records sit together.")}<br />{t("给人不多、专心做产品的团队用。", "Made for small teams that spend their time on the product.")}</p><a href="#workspace">{t("进入示例工作区", "Open the demo workspace")} <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a></div></section>
+      <section class="workspace-section" id="workspace" data-view-progress aria-label={t("可操作的 Relay 示例工作区", "A working Relay demo workspace")}>
+        <div class="workspace" data-relay>
+          <aside class="app-sidebar"><div class="team"><span class="team-icon">{t("拾", "D")}</span><strong>{t("拾光工作区", "Dayglow workspace")}</strong><span class="chevron" aria-hidden="true">⌄</span></div><a href="#workflow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 5h16v14H4zM4 13h5l2 3h2l2-3h5" /></svg>{t("反馈收件箱", "Feedback inbox")}</a><a href="#planning"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 2v5m8-5v5M4 10h16"/></svg>{t("迭代计划", "Cycle plan")}</a><div class="sidebar-label">{t("产品团队", "Product team")}</div><span class="sidebar-current"><i></i>{t("反馈体验优化", "Feedback experience")}</span><span class="sidebar-item">{t("搜索与发现", "Search and discovery")}</span><span class="sidebar-item">{t("发布记录", "Release notes")}</span><div class="sidebar-bottom"><span class="person">{t("岚", "L")}</span><span>{t("林岚", "Lin Lan")}<small>{t("产品设计", "Product design")}</small></span></div></aside>
+          <div class="app-main"><div class="app-breadcrumb"><span>{t("产品团队", "Product team")} <span aria-hidden="true">/</span> {t("反馈体验优化", "Feedback experience")}</span><span class="cycle-label">{t("本周迭代", "This cycle")}</span></div><div class="app-heading"><div><h2>{t("反馈体验优化", "Feedback experience")}</h2><p>{t("这一周要处理的反馈问题。", "Feedback issues to handle this week.")}</p></div><div class="view-control" role="group" aria-label={t("切换任务布局", "Task layout")}><button type="button" data-relay-view="list" aria-pressed="true" aria-controls="relay-list">{t("列表", "List")}</button><button type="button" data-relay-view="board" aria-pressed="false" aria-controls="relay-board">{t("看板", "Board")}</button></div></div>
+            <div class="task-summary"><span><i class="status-dot"></i><span data-pending-count>5</span> {t("项待推进", "open")}</span><span><i class="status-dot done"></i><span data-completed-count>1</span> {t("项已完成", "done")}</span><span>{t("6 月 17 日至 21 日", "June 17 to 21")}</span><span class="done-meter" aria-hidden="true"><i></i></span></div>
+            <div class="list-panel" id="relay-list" data-relay-panel="list"><div class="list-label">{t("本周任务", "This week")} <span>{t("负责人", "Owner")}</span></div>{tasks.map((task, index) => <button type="button" class="task-row" style={`--i:${index}`} data-task-open={task.id} data-title={task.title} data-description={task.description} data-person={task.person} data-state={task.state} aria-pressed={task.id === 'REL-42'}><span class="task-status" aria-hidden="true"></span><span class="sr-only" data-task-state>{columns.find((column) => column.id === task.state)!.name}</span><span class="task-id">{task.id}</span><span class="task-title">{task.title}</span><span class="task-tag">{task.tag}</span><span class="person" title={task.person}>{initial(task.person)}</span></button>)}</div>
+            <div class="board-panel" id="relay-board" data-relay-panel="board" hidden>{columns.map((column) => <div class="board-column"><h3><i class={`status-dot ${column.id}`}></i>{column.name}</h3><div class="board-cards" data-done-column={column.id === 'done' ? '' : undefined}>{tasks.filter((task) => task.state === column.id).map((task) => <button type="button" class="board-task" data-task-open={task.id} data-title={task.title} data-description={task.description} data-person={task.person} data-state={task.state} aria-pressed={task.id === 'REL-42'}><span class="sr-only" data-task-state>{column.name}</span><span class="board-task-meta"><span>{task.id}</span><span class="task-status" aria-hidden="true"></span></span><strong>{task.title}</strong><span class="board-task-bottom"><span class="task-tag">{task.tag}</span><span class="person">{initial(task.person)}</span></span></button>)}</div></div>)}</div>
+            <p class="workspace-hint">{t("选择一条任务，查看详情。试着把它标记为完成。", "Pick a task to see its details, then try marking it done.")}</p>
+          </div>
+          <aside class="task-detail" data-task-detail tabindex="-1" aria-label={t("任务详情", "Task details")}><div class="detail-top"><span data-task-code>REL-42</span><button type="button" data-task-close aria-label={t("关闭任务详情", "Close task details")}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg></button></div><h3 data-task-title>{t("合并反馈时保留原始链接", "Keep source links when merging feedback")}</h3><p class="detail-description" data-task-description>{t("同一个问题可能来自邮件、访谈和群聊。合并后保留每一条来源，让后续讨论有据可查。", "The same problem can arrive by email, in an interview and in a group chat. Keep every source after the merge so later discussion can point back to it.")}</p><dl><div><dt>{t("负责人", "Owner")}</dt><dd data-task-person>{t("林岚", "Lin Lan")}</dd></div><div><dt>{t("计划", "Cycle")}</dt><dd>{t("本周迭代", "This cycle")}</dd></div><div><dt>{t("项目", "Project")}</dt><dd>{t("反馈体验优化", "Feedback experience")}</dd></div></dl><div class="discussion"><span class="person">{t("知", "X")}</span><p><strong>{t("许知", "Xu Zhi")}</strong><span>{t("讨论与来源链接，都留在这条任务里。验收时可以一起回看。", "The discussion and the source links stay on this task, so you can read them again at acceptance.")}</span></p></div><button type="button" class="complete-button" data-task-complete>{t("标记为完成", "Mark as done")}</button><p class="task-local-note">{t("本地交互示例，刷新后恢复。", "Local demo. It resets on refresh.")}</p></aside>
+          <p class="sr-only" data-relay-announcement role="status"></p>
+        </div>
+        <div class="workspace-caption"><span>{t("示例工作区，可以直接操作。", "A demo workspace you can use.")}</span><span>{t("列表 / 看板 / 任务详情 / 完成状态", "List / Board / Task details / Done state")}</span></div>
+      </section>
+      <section class="statement shell" data-view-progress><h2 aria-label={statement.join('')}>{statement.map((line, lineIndex) => <span class="statement-line" aria-hidden="true">{[...line].map((char, index) => <span style={`--c:${((lineIndex * statement[0].length + index) / statementLength).toFixed(3)}`}>{char}</span>)}</span>)}</h2><p data-reveal>{t("反馈、计划和交付本来是连着的。", "Feedback, planning and delivery are already connected.")}<br />{t("Relay 把它们放在一处，接手的人能从上一步往下做。", "Relay keeps them together, so whoever picks up the work can continue from the last step.")}</p></section>
+      <section class="workflow shell" id="workflow"><div class="workflow-copy"><h2 data-reveal>{t("从收到反馈，", "From the first report")}<br />{t("到问题解决。", "to the fix.")}</h2><p>{t("问题先进收件箱，认领后变成任务，做完的结论记在同一条记录里。", "A problem lands in the inbox, becomes a task when someone claims it, and the outcome is written on the same record.")}</p><a class="text-link" href="#workspace">{t("用一条任务试试看", "Try it with one task")} <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6" /></svg></a></div><div class="activity" data-view-progress><div class="activity-line" aria-hidden="true"><i></i></div><article data-reveal><span class="activity-point"></span><p class="activity-time">{t("周一 09:42", "Mon 09:42")}</p><h3>{t("用户问题进入收件箱", "A user problem reaches the inbox")}</h3><p>{t("“合并反馈后，找不到最初的访谈链接。”", "\"After merging feedback, I can't find the original interview link.\"")}</p><span class="source-chip">{t("用户访谈 / 第 12 期", "User interview / No. 12")}</span></article><article data-reveal><span class="activity-point active"></span><p class="activity-time">{t("周一 10:18", "Mon 10:18")}</p><h3>{t("林岚认领了 REL-42", "Lin Lan claimed REL-42")}</h3><p>{t("明确处理范围，补上原始来源和验收条件。", "She set the scope and added the original sources and acceptance conditions.")}</p><div class="activity-people"><span class="person">{t("岚", "L")}</span><span class="person">{t("知", "X")}</span><span>{t("设计与开发，一起确认。", "Design and engineering confirm it together.")}</span></div></article><article data-reveal><span class="activity-point finished"></span><p class="activity-time">{t("交付时", "At delivery")}</p><h3>{t("结果留在同一条记录里", "The result stays on the same record")}</h3><p>{t("谁做了什么、怎样验收，都可以沿着记录找回来。", "Who did what and how it was accepted can be traced from the record.")}</p></article></div></section>
+      <section class="planning shell" id="planning"><div class="planning-heading"><h2 data-reveal>{t("谁在做什么，", "Who is doing what,")}<br />{t("排到哪一周。", "and in which week.")}</h2><p>{t("正在推进的事都排在时间轴上，", "Work in progress sits on a timeline,")}<br />{t("依赖关系和交付节点一眼能看到。", "with dependencies and delivery dates in view.")}</p></div><div class="roadmap" data-reveal aria-label={t("示例迭代时间线", "Example cycle timeline")}><div class="roadmap-head"><span>{t("六月产品迭代", "June product cycle")}</span><span>{t("第 1 周", "Week 1")}</span><span>{t("第 2 周", "Week 2")}</span><span>{t("第 3 周", "Week 3")}</span><span>{t("第 4 周", "Week 4")}</span></div><div class="roadmap-row"><span>{t("整理反馈", "Sort feedback")}</span><div style="--start:0;--length:1.3;--bar-color:#777a9d;--i:0" data-reveal="grow">{t("收集与归类", "Collect and group")}</div></div><div class="roadmap-row"><span>{t("交互设计", "Interaction design")}</span><div style="--start:.8;--length:1.4;--bar-color:#8a7cac;--i:2" data-reveal="grow">{t("方案与原型", "Proposal and prototype")}</div></div><div class="roadmap-row"><span>{t("开发与验收", "Build and accept")}</span><div style="--start:1.8;--length:1.6;--bar-color:#698b83;--i:4" data-reveal="grow">{t("实现与回归", "Build and regression")}</div></div><div class="roadmap-row"><span>{t("发布", "Release")}</span><div style="--start:3.3;--length:.7;--bar-color:#9d8b69;--i:6" data-reveal="grow">{t("交付", "Ship")}</div></div></div></section>
+      <section class="relay-close shell"><h2 data-reveal>{t("从下一条任务开始。", "Start with the next task.")}</h2><p>{t("打开工作区，把一件事推进到完成。", "Open the workspace and take one thing to done.")}</p><a class="light-button" href="#workspace">{t("试用交互示例", "Try the demo")}</a></section>
+    </main>
+    <footer class="relay-footer shell preview-footer"><a class="relay-brand" href="#top">Relay</a><nav aria-label={t("页脚导航", "Footer")}><a href="#workspace">{t("工作台", "Workspace")}</a><a href="#workflow">{t("工作方式", "How it works")}</a><a href="#planning">{t("迭代计划", "Cycle plan")}</a></nav><p>{t("虚构产品与示例数据 / Hibiki 的软件官网设计习作", "A fictional product with example data / Hibiki's software site study")}</p></footer>
+  </div>
+</PreviewLayout>
+<style>
+  .relay-site { background: #08090a; color: #f0f0f1; color-scheme: dark; overflow: clip; }
+  .shell { width: min(1280px, calc(100% - 10rem)); margin-inline: auto; }
+  .relay-header { display: flex; align-items: center; gap: 3rem; height: 76px; border-bottom: 1px solid #252629; }
+  .relay-brand { display: inline-flex; align-items: center; gap: .45rem; font-size: 1.5rem; font-weight: 650; letter-spacing: -.035em; }
+  .relay-header nav { display: flex; gap: 2rem; margin-left: auto; color: #a5a5ad; font-size: .8125rem; }
+  .relay-header nav a { padding-block: 1rem; }
+  .relay-header nav a:hover { color: #fff; }
+  .header-button, .light-button { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: .65rem 1rem; border-radius: 8px; background: #f0f0f1; color: #141416; font-size: .8125rem; font-weight: 550; }
+  .hero { position: relative; isolation: isolate; padding-block: 8rem 4.5rem; }
+  .hero-glow { position: absolute; z-index: -1; left: 30%; top: -20%; width: 60%; height: 120%; border-radius: 50%; background: radial-gradient(closest-side, #6f68a84d, transparent); filter: blur(40px); animation: glow-drifts 9s ease-in-out infinite alternate; pointer-events: none; }
+  .hero h1 .line { display: block; overflow: hidden; padding-bottom: .08em; }
+  .hero h1 .line > span { display: block; animation: line-rises 1s var(--motion-ease) both; }
+  .hero h1 .line:nth-child(2) > span { animation-delay: .12s; }
+  .hero-bottom { animation: fade-up 1s var(--motion-ease) .35s both; }
+  .task-row { animation: fade-up .7s var(--motion-ease) calc(.7s + var(--i) * 60ms) both; }
+  .statement-line { display: block; }
+  .statement-line > span { opacity: clamp(.18, calc((var(--view, 1) * 2.4 - .5 - var(--c)) * 5), 1); }
+  .activity-line i { display: block; width: 100%; height: 100%; background: #b7a6e5; transform-origin: top; transform: scaleY(clamp(0, calc(var(--view, 1) * 2 - .45), 1)); }
+  .activity article { transition-delay: 0s; }
+  .light-button, .header-button { transition: transform .3s var(--motion-ease), background .2s; }
+  .light-button:hover, .header-button:hover { transform: translateY(-2px); background: #fff; }
+  .board-task { transition: border-color .2s, transform .3s var(--motion-ease); }
+  .board-task:hover { transform: translateY(-2px); }
+  .hero h1 { max-width: 65rem; font-size: clamp(2.7rem, 5.7vw, 5.1rem); line-height: 1.16; font-weight: 550; letter-spacing: -.04em; }
+  .hero-bottom { display: flex; align-items: end; justify-content: space-between; gap: 3rem; margin-top: 2rem; }
+  .hero-bottom p { color: #a5a5ad; font-size: 1.0625rem; line-height: 1.85; }
+  .hero-bottom > a { display: flex; align-items: center; gap: .75rem; padding-block: .75rem; font-size: .875rem; }
+  .hero-bottom > a:hover svg { transform: translateX(4px); }
+  .hero-bottom svg { transition: transform .2s; }
+  .workspace-section { width: min(1400px, calc(100% - 6rem)); margin-inline: auto; scroll-margin-top: 2rem; }
+  .workspace { display: grid; grid-template-columns: 180px minmax(0, 1fr) 300px; min-height: 560px; border: 1px solid #343537; border-radius: 12px; background: #111214; box-shadow: 0 32px 80px #0007; transform-origin: 50% 0; transform: perspective(1600px) rotateX(calc((1 - clamp(0, calc(var(--view, 1) * 3.2 - .25), 1)) * 14deg)) scale(calc(.94 + clamp(0, calc(var(--view, 1) * 3.2 - .25), 1) * .06)); animation: workspace-arrives 1.2s var(--motion-ease) .25s both; --done: .1667; }
+  .workspace:has(.task-detail[hidden]) { grid-template-columns: 180px minmax(0, 1fr); }
+  .app-sidebar { display: flex; flex-direction: column; padding: 1.3rem .8rem; border-right: 1px solid #2c2d30; background: #151618; border-radius: 12px 0 0 12px; font-size: .75rem; }
+  .team { display: flex; align-items: center; gap: .5rem; padding: 0 .2rem 1.8rem; white-space: nowrap; }
+  .team-icon { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 5px; background: #8081a6; color: #fff; font-size: .6875rem; }
+  .chevron { margin-left: auto; color: #8d8e96; }
+  .app-sidebar > a { display: flex; align-items: center; gap: .6rem; min-height: 2.5rem; padding: .5rem; color: #b4b4bc; }
+  .app-sidebar > a:hover { color: #fff; }
+  .sidebar-label { margin: 1.8rem .5rem .75rem; color: #8d8e96; font-size: .6875rem; }
+  .sidebar-current, .sidebar-item { padding: .65rem .5rem; }
+  .sidebar-current { border-radius: 5px; background: #28292e; }
+  .sidebar-current i { display: inline-block; width: 7px; height: 7px; margin-right: .5rem; border-radius: 2px; background: #a19bce; }
+  .sidebar-item { color: #9a9aa3; }
+  .sidebar-bottom { display: flex; align-items: center; gap: .6rem; margin-top: auto; padding: 3rem .4rem 0; }
+  .sidebar-bottom small { display: block; margin-top: .3rem; color: #8d8e96; font-size: .625rem; }
+  .person { display: inline-grid; flex-shrink: 0; place-items: center; width: 24px; height: 24px; border: 1px solid #ffffff15; border-radius: 50%; background: #3a3a42; color: #e5e5ee; font-size: .625rem; }
+  .app-main { min-width: 0; }
+  .app-breadcrumb { display: flex; justify-content: space-between; gap: 1rem; padding: 1.2rem 1.5rem; border-bottom: 1px solid #292a2e; color: #a5a5ae; font-size: .6875rem; }
+  .app-breadcrumb > span > span { margin-inline: .5rem; color: #62636c; }
+  .cycle-label { white-space: nowrap; }
+  .app-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.75rem 1.5rem 1rem; }
+  .app-heading h2 { font-size: 1.25rem; font-weight: 550; letter-spacing: -.025em; }
+  .app-heading p { margin-top: .5rem; color: #9a9ba5; font-size: .75rem; }
+  .view-control { display: flex; flex-shrink: 0; gap: .15rem; padding: .2rem; border: 1px solid #34353c; border-radius: 6px; }
+  .view-control button { min-height: 2rem; padding: .3rem .65rem; border: 0; border-radius: 4px; background: none; color: #aaaab4; font-size: .6875rem; transition: background .2s; }
+  .view-control button[aria-pressed="true"] { background: #33343b; color: #fff; }
+  .task-summary { display: flex; align-items: center; flex-wrap: wrap; gap: 1.25rem; padding: 0 1.5rem 1.5rem; color: #a5a5ae; font-size: .6875rem; }
+  .task-summary > span { display: inline-flex; align-items: center; gap: .35rem; }
+  .task-summary > span:nth-child(3) { margin-left: auto; }
+  .done-meter { flex-basis: 100%; height: 3px; overflow: hidden; border-radius: 2px; background: #2a2b30; }
+  .done-meter i { display: block; height: 100%; background: #89b09e; transform-origin: left; transform: scaleX(var(--done)); transition: transform .8s var(--motion-ease); }
+  .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #9c92c7; }
+  .status-dot.todo { background: #a0a0aa; }
+  .status-dot.done, .task-summary .done { background: #89b09e; }
+  .list-label { display: flex; justify-content: space-between; padding: .75rem 1.5rem; border-block: 1px solid #2a2b30; background: #191a1e; color: #a1a1ac; font-size: .6875rem; }
+  .task-row { display: flex; align-items: center; gap: .65rem; width: 100%; min-height: 58px; padding: .85rem 1.5rem; border: 0; border-bottom: 1px solid #25262a; background: transparent; text-align: left; transition: background .18s; }
+  .task-row:hover, .task-row[aria-pressed="true"] { background: #ffffff07; }
+  .task-status { position: relative; display: inline-block; flex: 0 0 auto; width: 13px; height: 13px; border: 1.5px solid #777985; border-radius: 50%; }
+  [data-state="progress"] .task-status { border-color: #c1a767; background: linear-gradient(90deg, #c1a767 50%, transparent 50%); }
+  [data-state="done"] .task-status { border-color: #8cbaa5; background: #8cbaa5; }
+  [data-state="done"] .task-status::after { content: ''; position: absolute; top: 2px; left: 2px; width: 6px; height: 3px; border-left: 1px solid #13201b; border-bottom: 1px solid #13201b; transform: rotate(-45deg); }
+  .task-id { flex-shrink: 0; color: #8f919b; font-size: .625rem; font-variant-numeric: tabular-nums; }
+  .task-title { min-width: 0; flex: 1; color: #dbdbe0; font-size: .75rem; line-height: 1.6; }
+  .task-tag { width: fit-content; flex-shrink: 0; padding: .15rem .4rem; border: 1px solid #393a43; border-radius: 4px; color: #bcb8ce; font-size: .625rem; }
+  .board-panel { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .65rem; padding: .5rem 1rem 1rem; }
+  .board-column h3 { display: flex; align-items: center; gap: .5rem; padding: .6rem .25rem 1rem; color: #b7b7c2; font-size: .75rem; font-weight: 450; }
+  .board-cards { display: flex; flex-direction: column; gap: .65rem; min-height: 100px; }
+  .board-task { display: grid; gap: 1rem; padding: .8rem; border: 1px solid #33353c; border-radius: 7px; background: #1b1c21; text-align: left; }
+  .board-task:hover { border-color: #737181; }
+  .board-task-meta, .board-task-bottom { display: flex; align-items: center; justify-content: space-between; gap: .4rem; color: #999ba7; font-size: .625rem; }
+  .board-task strong { font-size: .75rem; line-height: 1.6; font-weight: 450; }
+  .workspace-hint { padding: 1.5rem; color: #91929e; font-size: .6875rem; line-height: 1.8; }
+  .task-detail { display: flex; flex-direction: column; min-width: 0; padding: 1rem 1.5rem; border-left: 1px solid #303138; background: #151619; border-radius: 0 12px 12px 0; }
+  .detail-top { display: flex; align-items: center; justify-content: space-between; color: #9fa0ac; font-size: .6875rem; }
+  .detail-top button { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; margin-right: -.75rem; border: 0; background: none; color: #b6b6be; }
+  .task-detail h3 { margin-top: 1.5rem; font-size: 1.25rem; font-weight: 550; line-height: 1.5; letter-spacing: -.025em; }
+  .detail-description { margin-top: 1rem; color: #a6a7b2; font-size: .8125rem; line-height: 1.9; }
+  .task-detail dl { display: grid; gap: .85rem; margin-block: 1.5rem; font-size: .6875rem; }
+  .task-detail dl div { display: flex; gap: 1rem; }
+  .task-detail dt { width: 3rem; color: #9698a4; }
+  .task-detail dd { margin: 0; color: #cccdd5; }
+  .discussion { display: flex; gap: .6rem; margin-top: auto; padding-top: 1.5rem; border-top: 1px solid #303138; }
+  .discussion p { color: #a3a4b0; font-size: .6875rem; line-height: 1.9; }
+  .discussion strong { color: #dedee5; font-weight: 500; }
+  .discussion p > span { display: block; margin-top: .4rem; }
+  .complete-button { min-height: 2.75rem; margin-top: 1.5rem; border: 1px solid #7a74a5; border-radius: 6px; background: #77719e; color: #fff; font-size: .75rem; }
+  .complete-button:hover { background: #8881b2; }
+  .complete-button:disabled { border-color: #426151; background: #243c30; color: #b2d6bf; }
+  .task-local-note { margin-top: .65rem; color: #92939e; font-size: .625rem; text-align: center; }
+  .workspace-caption { display: flex; justify-content: space-between; gap: 1rem; padding: 1.2rem 0; color: #9697a1; font-size: .6875rem; }
+  .statement { display: grid; grid-template-columns: 1.1fr 1fr; align-items: end; gap: 6rem; padding-block: 9rem 6rem; }
+  .statement h2, .workflow h2, .planning h2, .relay-close h2 { font-size: clamp(2.25rem, 4vw, 3.5rem); font-weight: 500; letter-spacing: -.04em; line-height: 1.2; }
+  .statement p, .workflow-copy > p, .planning-heading p { color: #a2a3ae; font-size: 1rem; line-height: 1.9; }
+  .workflow { display: grid; grid-template-columns: 1fr 1.2fr; gap: 9rem; padding-block: 6rem 8rem; border-top: 1px solid #2b2c30; }
+  .workflow-copy { align-self: start; position: sticky; top: 4rem; }
+  .workflow-copy > p { max-width: 26rem; margin-top: 2rem; }
+  .text-link { display: inline-flex; align-items: center; gap: .7rem; min-height: 2.75rem; margin-top: 1.5rem; font-size: .8125rem; }
+  .activity { position: relative; padding-left: 2.5rem; }
+  .activity-line { position: absolute; top: 10px; bottom: 50px; left: 0; width: 1px; background: #3a3b45; }
+  .activity article { position: relative; padding-block: 0 3rem; }
+  .activity article:last-child { padding-bottom: 0; }
+  .activity-point { position: absolute; top: 3px; left: calc(-2.5rem - 4px); width: 9px; height: 9px; border: 2px solid #777a8d; border-radius: 50%; background: #08090a; }
+  .activity-point.active { border-color: #b7a6e5; }
+  .activity-point.finished { border-color: #85b09c; background: #85b09c; }
+  .activity-time { color: #9495a3; font-size: .6875rem; }
+  .activity h3 { margin-top: .8rem; font-size: 1.2rem; font-weight: 500; }
+  .activity h3 + p { margin-top: .8rem; color: #a2a3ae; font-size: .875rem; line-height: 1.9; }
+  .source-chip { display: inline-block; margin-top: 1.25rem; padding: .6rem 1rem; border: 1px solid #353640; border-radius: 5px; color: #b5b4c8; font-size: .75rem; }
+  .activity-people { display: flex; align-items: center; gap: .35rem; margin-top: 1.25rem; }
+  .activity-people > span:last-child { margin-left: .5rem; color: #9697a4; font-size: .75rem; }
+  .planning { padding-block: 6rem 8rem; border-top: 1px solid #2b2c30; }
+  .planning-heading { display: flex; align-items: end; justify-content: space-between; gap: 3rem; }
+  .roadmap { overflow: hidden; margin-top: 4rem; border: 1px solid #34353c; border-radius: 10px; background: #121316; }
+  .roadmap-head { display: grid; grid-template-columns: 170px repeat(4, 1fr); padding: 1.2rem 1.5rem; border-bottom: 1px solid #34353c; color: #a6a6b2; font-size: .6875rem; }
+  .roadmap-row { position: relative; display: flex; align-items: center; min-height: 82px; padding: 1rem 1.5rem; border-bottom: 1px solid #282930; font-size: .8125rem; }
+  .roadmap-row:last-child { border: 0; }
+  .roadmap-row > span { width: 170px; flex-shrink: 0; color: #b2b3be; }
+  .roadmap-row > div { width: calc((100% - 170px) / 4 * var(--length)); margin-left: calc((100% - 170px) / 4 * var(--start)); padding: .8rem; border: 1px solid var(--bar-color); border-radius: 5px; background: color-mix(in srgb, var(--bar-color) 22%, #141519); color: #e7e7eb; font-size: .6875rem; transform-origin: left; white-space: nowrap; }
+  .relay-close { padding-block: 6rem 8rem; border-top: 1px solid #2b2c30; text-align: center; }
+  .relay-close p { margin-top: 1.5rem; color: #9c9da8; }
+  .relay-close > a { margin-top: 2rem; }
+  .relay-footer { display: flex; align-items: center; flex-wrap: wrap; gap: 2rem; padding-top: 2rem; border-top: 1px solid #2b2c30; }
+  .relay-footer nav { display: flex; gap: 2rem; margin-left: auto; color: #a9a9b3; font-size: .75rem; }
+  .relay-footer p { width: 100%; color: #91929d; font-size: .6875rem; }
+  @keyframes workspace-arrives { from { opacity: 0; translate: 0 3rem; } to { opacity: 1; translate: 0 0; } }
+  @keyframes line-rises { from { transform: translateY(110%); } to { transform: translateY(0); } }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(1rem); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes glow-drifts { from { transform: translate(-8%, 0) scale(1); } to { transform: translate(10%, 6%) scale(1.15); } }
+  @media (max-width: 1150px) {
+    .shell { width: calc(100% - 5rem); }
+    .workspace-section { width: calc(100% - 3rem); }
+    .workspace { grid-template-columns: 145px minmax(0, 1fr) 260px; }
+    .workspace:has(.task-detail[hidden]) { grid-template-columns: 145px minmax(0, 1fr); }
+    .task-row { padding-inline: 1rem; gap: .45rem; }
+    .task-tag { display: none; }
+    .task-detail { padding-inline: 1.1rem; }
+    .statement { gap: 3rem; }
+    .workflow { gap: 5rem; }
+    .board-panel { gap: .4rem; padding-inline: .6rem; }
+    .board-task { padding: .6rem; }
+  }
+  @media (max-width: 800px) {
+    .relay-header { gap: 1.5rem; }
+    .relay-header nav { gap: 1rem; }
+    .hero { padding-top: 5rem; }
+    .hero-bottom { align-items: start; flex-direction: column; gap: 1rem; }
+    .workspace, .workspace:has(.task-detail[hidden]) { grid-template-columns: minmax(0, 1fr) 250px; }
+    .app-sidebar { display: none; }
+    .task-id { display: none; }
+    .app-heading { padding-inline: 1rem; }
+    .app-heading h2 { font-size: 1rem; }
+    .app-breadcrumb { padding-inline: 1rem; }
+    .statement, .workflow { grid-template-columns: 1fr; gap: 3rem; }
+    .workflow-copy { position: static; }
+    .planning-heading { align-items: start; flex-direction: column; gap: 2rem; }
+    .roadmap-head { grid-template-columns: 100px repeat(4, 1fr); padding-inline: 1rem; }
+    .roadmap-row { padding-inline: 1rem; }
+    .roadmap-row > span { width: 100px; }
+    .roadmap-row > div { width: calc((100% - 100px) / 4 * var(--length)); margin-left: calc((100% - 100px) / 4 * var(--start)); padding-inline: .4rem; }
+  }
+  @media (max-width: 600px) {
+    .shell { width: calc(100% - 3rem); }
+    .relay-header { height: 68px; }
+    .relay-header nav { display: none; }
+    .header-button { margin-left: auto; font-size: .75rem; padding-inline: .8rem; }
+    .hero { padding-top: 4rem; padding-bottom: 3rem; }
+    .hero h1 { font-size: clamp(2.1rem, 8.5vw, 3rem); }
+    .hero-bottom p { font-size: .875rem; }
+    .workspace-section { width: calc(100% - 1.5rem); }
+    .workspace, .workspace:has(.task-detail[hidden]) { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .workspace { transform: none; }
+    .task-detail { display: none; border-left: 0; border-top: 1px solid #35363c; border-radius: 0 0 12px 12px; }
+    .workspace.detail-open .task-detail { display: flex; }
+    .app-breadcrumb { font-size: .625rem; }
+    .cycle-label { display: none; }
+    .app-heading { gap: .5rem; }
+    .app-heading h2 { font-size: 1rem; }
+    .app-heading p { font-size: .6875rem; }
+    .task-summary { padding-inline: 1rem; gap: .8rem; }
+    .task-summary > span:nth-child(3) { display: none; }
+    .task-title { font-size: .75rem; }
+    .task-row { min-height: 65px; }
+    .board-panel { grid-template-columns: repeat(3, minmax(160px, 1fr)); overflow-x: auto; padding-bottom: 1rem; }
+    .board-task .task-tag { display: inline-block; }
+    .workspace-caption { flex-direction: column; gap: .5rem; padding-inline: .5rem; }
+    .statement { padding-block: 5rem 3rem; }
+    .statement p, .workflow-copy > p, .planning-heading p { font-size: .875rem; }
+    .workflow, .planning { padding-block: 4rem; }
+    .activity { margin-left: .4rem; padding-left: 1.75rem; }
+    .activity-point { left: calc(-1.75rem - 4px); }
+    .roadmap { overflow-x: auto; }
+    .roadmap-head, .roadmap-row { min-width: 570px; }
+    .relay-close { padding-block: 4rem 5rem; }
+    .relay-footer { gap: 1.5rem; }
+    .relay-footer nav { gap: 1rem; margin-left: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { .workspace { transform: none; } .hero-glow { animation: none; } }
+</style>

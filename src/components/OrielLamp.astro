@@ -1,0 +1,24 @@
+---
+// Oriel is a fictional desk lamp drawn entirely in CSS.
+// Inherited custom properties drive it: --body / --body-hi / --body-lo (shell),
+// --glow (light colour), --level (0–1 brightness), --head-turn (head rotation).
+interface Props { label?: string; }
+const { label } = Astro.props;
+---
+<div class="lamp" role={label ? 'img' : undefined} aria-label={label} aria-hidden={label ? undefined : 'true'}>
+  <div class="lamp-halo"></div>
+  <div class="lamp-head"><div class="lamp-diffuser"></div></div>
+  <div class="lamp-stem"><span class="lamp-dial"></span></div>
+  <div class="lamp-base"></div>
+</div>
+
+<style>
+  .lamp { position: relative; flex-shrink: 0; width: 10em; height: 14em; perspective: 50em; --lamp-level: var(--level, 1); --lamp-glow: var(--glow, #ffd1a3); }
+  .lamp-halo { position: absolute; left: 50%; top: 4em; width: 26em; height: 26em; translate: -50% -50%; border-radius: 50%; background: radial-gradient(circle, var(--lamp-glow) 0%, transparent 62%); opacity: calc(var(--lamp-level) * .4); pointer-events: none; }
+  .lamp-head { position: absolute; left: 1em; top: 0; width: 8em; height: 8em; padding: .42em; border-radius: 50%; background: linear-gradient(145deg, var(--body-hi), var(--body) 45%, var(--body-lo)); transform: rotateY(var(--head-turn, 0deg)); box-shadow: 0 0 calc(var(--lamp-level) * 3em) color-mix(in srgb, var(--lamp-glow) 55%, transparent); }
+  .lamp-diffuser { position: relative; width: 100%; height: 100%; overflow: hidden; border-radius: 50%; background: #1b1b1d; box-shadow: inset 0 0 .5em #0009; }
+  .lamp-diffuser::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 45%, #fff 0%, var(--lamp-glow) 58%); opacity: var(--lamp-level); }
+  .lamp-stem { position: absolute; left: calc(50% - .13em); top: 7.9em; width: .26em; height: 5.6em; background: linear-gradient(90deg, var(--body-lo), var(--body-hi) 45%, var(--body-lo)); }
+  .lamp-dial { position: absolute; left: 50%; top: 2.6em; width: .8em; height: .8em; translate: -50% 0; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--body-hi), var(--body-lo)); box-shadow: 0 .05em .15em #0008; }
+  .lamp-base { position: absolute; left: 2.4em; bottom: 0; width: 5.2em; height: .6em; border-radius: 50%; background: linear-gradient(180deg, var(--body-hi), var(--body-lo)); box-shadow: 0 .3em .6em #0007; }
+</style>

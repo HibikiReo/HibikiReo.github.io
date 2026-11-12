@@ -1,0 +1,55 @@
+---
+import { useLocale } from '../i18n';
+const { t, htmlLang, alternate } = useLocale(Astro.url);
+import '@fontsource-variable/dm-sans/opsz.css';
+import '@fontsource/instrument-serif/latin-400.css';
+import '@fontsource/instrument-serif/latin-400-italic.css';
+import '../styles/global.css';
+import '../styles/motion.css';
+import '../styles/themes.css';
+import MusicDefs from '../components/MusicDefs.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = t("Hibiki 的前端设计与代码笔记", "Hibiki's notes on front-end design and code"),
+  description = t("我在这里记下界面设计和前端开发的想法，也放一些交互动效与设计作品。", "Notes on interface design and front-end development, with some motion experiments and design work."),
+} = Astro.props;
+---
+<!doctype html>
+<html lang={htmlLang} data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f3f3f3" />
+    <script is:inline>
+      (() => {
+        // Both themes use neutral surfaces; apply the saved choice before the body renders.
+        const root = document.documentElement;
+        let theme = 'light';
+        try {
+          if (localStorage.getItem('etudes-theme') === 'dark') theme = 'dark';
+        } catch {}
+        root.dataset.theme = theme;
+        document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'dark' ? '#202020' : '#f3f3f3');
+      })();
+    </script>
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" hreflang={t('en', 'zh-CN')} href={alternate} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{t("跳到主要内容", "Skip to main content")}</a>
+    <MusicDefs />
+    <slot />
+    <script>
+      import '../scripts/home';
+    </script>
+  </body>
+</html>

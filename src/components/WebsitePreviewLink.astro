@@ -1,0 +1,34 @@
+---
+import { useLocale } from '../i18n';
+const { t, locale } = useLocale(Astro.url);
+import { getSiteStudies, type SiteStudyId } from '../data/site-studies';
+import Icon from './Icon.astro';
+interface Props { id: SiteStudyId; }
+const { id } = Astro.props;
+const study = getSiteStudies(locale).find((item) => item.id === id)!;
+const image = study.cover;
+---
+<a class={`site-preview-link preview-link-${id}`} href={study.href} style={`--study-bg:${study.background};--study-ink:${study.ink};--study-accent:${study.accent}`} aria-label={t(`打开 ${study.brand} 的完整官网设计预览`, `Open the full site design preview for ${study.brand}`)}>
+  <span class="link-visual" aria-hidden="true">
+    <img src={image} alt="" width="1440" height="1000" loading="lazy" decoding="async" />
+  </span>
+  <span class="link-copy"><span class="link-style">{study.name}</span><strong>{study.title}</strong><span class="link-action">{t("打开完整预览", "Open the full preview")} <Icon name="arrow" size={16} /></span></span>
+</a>
+
+<style>
+  .site-preview-link { display: grid; grid-template-columns: minmax(9rem, .7fr) minmax(0, 1.3fr); overflow: hidden; margin-top: 1.75rem; border: 1px solid var(--rule-strong); border-radius: .6rem; background: var(--sheet); }
+  .site-preview-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 5px; }
+  .link-visual { position: relative; display: grid; min-height: 12rem; overflow: hidden; background: var(--study-bg); color: var(--study-ink); }
+  .link-visual > img { position: absolute; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+  .link-copy { display: flex; flex-direction: column; align-items: start; justify-content: center; gap: .65rem; padding: 1.5rem; }
+  .link-style { color: var(--ink-3); font-size: .75rem; }
+  .link-copy > strong { color: var(--ink); font-size: 1.125rem; line-height: 1.6; font-weight: 550; }
+  .link-action { display: inline-flex; align-items: center; gap: .75rem; min-height: 2.75rem; margin-top: .25rem; color: var(--accent); font-size: .8125rem; }
+  .site-preview-link:hover .link-action { text-decoration: underline; text-underline-offset: .3em; }
+  @media (max-width: 550px) {
+    .site-preview-link { grid-template-columns: minmax(0, 1fr); }
+    .link-visual { min-height: 11rem; }
+    .link-copy { padding: 1.25rem; gap: .5rem; }
+    .link-copy > strong { font-size: 1rem; }
+  }
+</style>

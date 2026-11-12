@@ -1,0 +1,143 @@
+---
+import { useLocale } from '../i18n';
+const { t } = useLocale(Astro.url);
+import type { WebThemeId } from '../data/web-themes';
+import LiquidGlassPreview from './LiquidGlassPreview.astro';
+interface Props { id: WebThemeId; }
+const { id } = Astro.props;
+---
+{id === 'liquid' ? <LiquidGlassPreview /> : <div class={`study-preview preview-${id}`}>
+        {id === 'soft' && <>
+          <div class="study-header"><span>Hibiki / Quiet notes</span><span>{t("界面交互笔记", "Interaction notes")}</span></div>
+          <div class="soft-note"><span class="soft-slot">{t("关于按钮反馈", "On button feedback")}</span><h3>{t("点一下，", "Tap to try")}<br/>{t("试试收藏按钮。", "the save button.")}</h3><p>{t("收藏状态只在当前预览里保留。", "The saved state stays in this preview only.")}</p><label class="soft-save"><input class="study-sr-only" type="checkbox" aria-label={t("收藏这篇示例笔记", "Save this sample note")} /><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 20S3 14.5 3 8.5A4.5 4.5 0 0 1 12 7a4.5 4.5 0 0 1 9 1.5C21 14.5 12 20 12 20Z" /></svg><span class="soft-unsaved">{t("收藏这篇笔记", "Save this note")}</span><span class="soft-saved">{t("已收藏", "Saved")}</span></label></div>
+        </>}
+        {id === 'swiss' && <>
+          <div class="study-header swiss-header"><span>Hibiki / Design archive</span><span>{t("设计与前端", "Design and front end")}</span></div>
+          <div class="swiss-main"><h3>{t("我这样", "How I arrange")}<br/>{t("安排版面。", "a page.")}</h3><div class="swiss-aside"><strong>{t("设计笔记", "Design notes")}</strong><span>{t("排版", "Type")}</span><span>{t("布局", "Layout")}</span><span>{t("交互", "Interaction")}</span></div></div>
+          <div class="swiss-footer"><p>{t("标题、正文和侧栏", "Headline, body and sidebar")}<br/>{t("沿着网格对齐。", "align to the grid.")}</p><span>{t("按阅读顺序", "Hierarchy follows")}<br/>{t("安排层级。", "reading order.")}</span></div>
+        </>}
+        {id === 'brutal' && <>
+          <div class="study-header"><span>Hibiki / Make things</span><span>{t("设计与实现", "Design and build")}</span></div>
+          <div class="brutal-card"><span class="brutal-tag">{t("设计 × 代码", "Design × Code")}</span><h3>{t("边框和阴影", "Borders and shadows")}</h3><p>{t("我用粗边框和偏移阴影，让按钮看起来像垫高了一层。", "Thick borders and an offset shadow make the button look raised by one layer.")}</p><details class="brutal-more"><summary>{t("看看按钮的做法", "See how the button is made")}</summary><p>{t("卡片边框是粗实线，", "The card has a thick solid border.")}<br/>{t("按下按钮时，阴影会消失。", "Press the button and the shadow disappears.")}</p></details></div>
+        </>}
+        {id === 'pixel' && <>
+          <div class="study-header"><span>Hibiki’s desktop</span><span>{t("前端小工具", "Small front-end tools")}</span></div>
+          <div class="pixel-window"><div class="pixel-title"><span>notes.html</span><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M1 1h10v10H1zM3 3v6h6V3z" fill="currentColor" fill-rule="evenodd" /></svg></div><div class="pixel-main"><svg class="pixel-icon" viewBox="0 0 14 16" fill="currentColor" shape-rendering="crispEdges" aria-hidden="true"><path d="M2 0h7v2H2zM0 2h2v12H0zm2 12h10v2H2zm10-8h2v8h-2zM9 2h2v2H9zm2 2h2v2h-2zM8 0h2v6H8zm2 4h4v2h-4zM4 7h5v1H4zm0 3h6v1H4z" /></svg><div><h3>{t("小窗口里的", "Front-end notes")}<br/>{t("前端笔记。", "in a small window.")}</h3><p>{t("遇到想试的做法，我就先写一小段代码。", "When I want to try something, I write a short piece of code first.")}</p></div></div><pre class="pixel-code"><code>{'const note = {\n  idea: "make it real",\n};'}</code></pre><div class="pixel-status"><span>UTF-8</span><span>browser preview</span></div></div>
+        </>}
+        {id === 'collage' && <>
+          <div class="study-header"><span>Hibiki / Collected thoughts</span><span>{t("零散的设计笔记", "Loose design notes")}</span></div>
+          <div class="collage-composition"><div class="collage-paper"><span class="collage-tape" aria-hidden="true"></span><span class="study-kicker">{t("随手记下的想法", "Ideas jotted down")}</span><h3>{t("我试着把想法", "Turning ideas")}<br/>{t("写成代码。", "into code.")}</h3><p>{t("做成网页以后，我会再调整间距和层级。", "Once it is a web page, I adjust the spacing and hierarchy again.")}</p></div><div class="collage-code"><span>sketch.js</span><pre><code>{'a small idea\n  + a little code\n  = something new'}</code></pre></div></div><span class="collage-footer">{t("关于配色和排版的随手记。", "Quick notes on color and type.")}</span>
+        </>}
+</div>}
+
+<style>
+  .study-preview { position: relative; height: 100%; container-type: inline-size; padding: 1.5rem; font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  .study-preview :is(h3, p, pre) { margin: 0; }
+  .study-preview h3 { font-family: var(--theme-display); font-size: clamp(1.7rem, 6cqw, 3.8rem); font-weight: 550; line-height: 1.45; letter-spacing: -.035em; }
+  .study-preview p { font-size: .75rem; line-height: 1.8; color: var(--theme-muted); overflow-wrap: normal; }
+  .study-preview pre { font-family: var(--mono); }
+  .study-header { display: flex; justify-content: space-between; align-items: center; gap: .75rem; font-size: .75rem; line-height: 1.6; }
+  .study-header > span:last-child { font-size: .5625rem; white-space: nowrap; color: var(--theme-muted); }
+  .study-kicker { display: block; margin-bottom: .75rem; font-size: .625rem; color: var(--theme-accent); }
+  .study-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+  .preview-soft { display: flex; flex-direction: column; gap: 1.5rem; }
+  .soft-note { align-self: center; width: min(100%, 29rem); margin-block: auto; padding: 1.5rem; border: 1px solid var(--theme-line); border-radius: 1.5rem; background: var(--theme-bg); box-shadow: -8px -8px 20px var(--theme-surface), 8px 8px 20px color-mix(in srgb, var(--theme-bg) 72%, black); }
+  .soft-slot { display: inline-block; padding: .55rem .9rem; border-radius: .6rem; box-shadow: inset 3px 3px 7px color-mix(in srgb, var(--theme-bg) 72%, black), inset -3px -3px 7px var(--theme-surface); font-size: .625rem; color: var(--theme-muted); }
+  .soft-note h3 { margin-top: 1rem; }
+  .soft-note > p { margin-top: .6rem; }
+  .soft-save { position: relative; display: inline-flex; align-items: center; gap: .6rem; min-height: 2.75rem; margin-top: 1.25rem; padding: .65rem 1rem; border: 1px solid var(--theme-line); border-radius: .8rem; box-shadow: -4px -4px 10px var(--theme-surface), 4px 4px 10px color-mix(in srgb, var(--theme-bg) 72%, black); color: var(--theme-ink); font-size: .75rem; cursor: pointer; transition: box-shadow .15s; }
+  .soft-save svg { flex-shrink: 0; color: var(--theme-accent); }
+  .soft-save:has(input:checked), .soft-save:active { box-shadow: inset 4px 4px 9px color-mix(in srgb, var(--theme-bg) 72%, black), inset -4px -4px 9px var(--theme-surface); }
+  .soft-save:has(input:checked) svg { fill: currentColor; }
+  .soft-saved, .soft-save:has(input:checked) .soft-unsaved { display: none; }
+  .soft-save:has(input:checked) .soft-saved { display: inline; }
+  .soft-save:has(input:focus-visible) { outline: 2px solid var(--theme-accent); outline-offset: 4px; }
+
+  .preview-swiss { display: grid; grid-template-rows: auto 1fr auto; gap: 1.25rem; }
+  .swiss-header { padding-bottom: .75rem; border-bottom: 2px solid var(--theme-ink); }
+  .swiss-main { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.25rem; }
+  .swiss-main h3 { align-self: center; font-size: clamp(1.9rem, 8cqw, 4.4rem); font-weight: 750; line-height: 1.2; letter-spacing: -.055em; }
+  .swiss-aside { display: flex; flex-direction: column; justify-content: flex-end; gap: .75rem; padding: 1rem; background: var(--theme-accent); color: var(--theme-bg); font-size: .75rem; }
+  .swiss-aside strong { margin-bottom: auto; font-size: .625rem; font-weight: 500; }
+  .swiss-footer { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 1.25rem; padding-top: 1rem; border-top: 2px solid var(--theme-ink); }
+  .swiss-footer > span { font-size: .625rem; line-height: 1.8; color: var(--theme-accent); }
+
+  .preview-brutal { display: flex; flex-direction: column; gap: 1rem; }
+  .brutal-card { display: flex; flex-direction: column; align-items: flex-start; gap: .65rem; margin-block: auto; padding: 1.25rem; border: 3px solid var(--theme-ink); background: var(--theme-surface); box-shadow: 7px 7px 0 var(--theme-ink); }
+  .brutal-tag { padding: .3rem .6rem; background: var(--theme-accent); color: #252525; font-size: .625rem; font-weight: 700; rotate: -3deg; }
+  .brutal-card h3 { font-size: clamp(1.9rem, 7cqw, 3.6rem); font-weight: 800; line-height: 1.3; }
+  .brutal-more { align-self: stretch; }
+  .brutal-more summary { min-height: 2.75rem; padding: .65rem .75rem; border: 2px solid var(--theme-ink); background: var(--theme-accent); color: #252525; box-shadow: 4px 4px 0 var(--theme-ink); font-size: .75rem; font-weight: 650; line-height: 1.5; cursor: pointer; }
+  .brutal-more summary:active { translate: 4px 4px; box-shadow: none; }
+  .brutal-more summary:focus-visible { outline: 2px solid var(--theme-ink); outline-offset: 5px; }
+  .brutal-more[open] summary { box-shadow: none; }
+  .brutal-more p { margin-top: .75rem; }
+
+  .preview-pixel { display: flex; flex-direction: column; gap: 1.25rem; }
+  .pixel-window { width: min(calc(100% - .5rem), 31rem); margin: auto; border: 2px solid var(--theme-line); background: var(--theme-surface); box-shadow: 4px 0 0 var(--theme-line), 0 4px 0 var(--theme-line), -4px 0 0 var(--theme-line), 0 -4px 0 var(--theme-line), 8px 8px 0 color-mix(in srgb, var(--theme-ink) 24%, transparent); }
+  .pixel-title { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .5rem .75rem; border-bottom: 2px solid var(--theme-line); font-family: var(--mono); font-size: .625rem; color: var(--theme-accent); }
+  .pixel-main { display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: start; gap: .9rem; padding: 1rem; }
+  .pixel-icon { width: 2rem; margin-top: .4rem; color: var(--theme-accent); image-rendering: pixelated; }
+  .pixel-main h3 { font-size: clamp(1.4rem, 5cqw, 2.5rem); line-height: 1.5; }
+  .pixel-main p { margin-top: .6rem; }
+  .study-preview .pixel-code { margin-inline: 1.25rem; padding: .75rem; overflow: auto; border: 1px dashed var(--theme-line); font-size: .6875rem; line-height: 1.7; color: var(--theme-accent); }
+  .pixel-status { display: flex; justify-content: space-between; gap: .75rem; padding: .65rem 1.25rem; font-family: var(--mono); font-size: .5rem; line-height: 1.6; color: var(--theme-muted); }
+
+  .preview-collage { display: flex; flex-direction: column; gap: 1rem; }
+  .collage-composition { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: center; margin-block: auto; padding: 1rem .6rem; }
+  .collage-paper { position: relative; z-index: 1; margin-right: -1rem; padding: 1.5rem; border: 1px solid var(--theme-line); background: var(--theme-surface); box-shadow: 0 8px 20px #00000018; rotate: -3deg; }
+  .collage-tape { position: absolute; top: -.5rem; left: 15%; width: 3.75rem; height: 1.1rem; background: #C68C69; opacity: .85; rotate: -7deg; }
+  .collage-paper h3 { font-size: clamp(1.8rem, 6cqw, 3.6rem); font-weight: 400; line-height: 1.4; }
+  .collage-paper p { margin-top: .75rem; }
+  .collage-code { padding: 1.5rem; background: #7D3342; color: #FFFFFF; box-shadow: 0 8px 20px #00000020; rotate: 5deg; }
+  .collage-code > span { font-family: var(--mono); font-size: .5625rem; }
+  .collage-code pre { margin-top: .75rem; overflow: auto; font-size: .5625rem; line-height: 2; }
+  .collage-footer { align-self: flex-end; font-size: .625rem; color: var(--theme-muted); }
+
+  @container (max-width: 28rem) {
+    .study-preview { padding: 1.25rem; }
+    .study-header { font-size: .6875rem; }
+    .study-header > span:last-child { font-size: .5rem; }
+    .soft-note { padding: 1.25rem; }
+    .soft-note h3 { font-size: 1.8rem; }
+    .soft-save { margin-top: 1rem; }
+    .swiss-main { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: .75rem; }
+    .swiss-main h3 { font-size: clamp(1.6rem, 7cqw, 2.5rem); }
+    .swiss-aside { padding: .75rem; }
+    .swiss-footer { gap: .75rem; }
+    .brutal-card { padding: 1rem; box-shadow: 5px 5px 0 var(--theme-ink); }
+    .brutal-card h3 { font-size: 1.9rem; }
+    .pixel-main { grid-template-columns: 1.5rem minmax(0, 1fr); gap: .75rem; padding: 1rem; }
+    .pixel-icon { width: 1.5rem; }
+    .study-preview .pixel-code { margin-inline: 1rem; }
+    .pixel-status { padding-inline: 1rem; }
+    .collage-paper, .collage-code { padding: 1.1rem; }
+    .collage-code pre { font-size: .5rem; }
+  }
+  @container (max-width: 20rem) {
+    .study-header > span:last-child { display: none; }
+    .swiss-main { grid-template-columns: 1fr; gap: 1rem; }
+    .swiss-aside { flex-direction: row; align-items: center; justify-content: space-between; gap: .5rem; padding: .75rem; font-size: .625rem; }
+    .swiss-aside strong { display: none; }
+    .swiss-footer p { font-size: .6875rem; }
+    .pixel-main h3 { font-size: 1.3rem; }
+    .pixel-main p { font-size: .6875rem; }
+    .collage-composition { grid-template-columns: 1fr; padding: .5rem 0; }
+    .collage-paper { width: 80%; margin-right: 0; padding: 1rem; rotate: -1deg; }
+    .collage-paper h3 { font-size: 1.6rem; }
+    .collage-paper .study-kicker { margin-bottom: .5rem; }
+    .collage-paper p { font-size: .625rem; margin-top: .5rem; }
+    .collage-code { justify-self: end; width: 76%; margin-top: -.3rem; padding: .75rem 1rem; rotate: 2deg; }
+    .collage-code pre { margin-top: .4rem; line-height: 1.7; }
+    .collage-footer { font-size: .5625rem; }
+  }
+  @media (prefers-contrast: more) {
+    .soft-note, .soft-slot, .soft-save, .soft-save:has(input:checked), .soft-save:active { box-shadow: none; }
+    .soft-slot { border: 1px solid var(--theme-line); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .soft-save { transition: none; }
+    .brutal-more summary:active { translate: none; }
+  }
+</style>

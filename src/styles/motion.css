@@ -1,0 +1,26 @@
+/* A single page arrival; everything after it responds to a reader's action. */
+:root, body { transition: background-color .4s ease, color .3s ease; }
+.site-header { animation: header-arrive .6s var(--ease) both; }
+.reading-header, .intro, .notes-head { animation: content-arrive .65s var(--ease) both; }
+
+/* Press starts on pointer-down, release settles from the current presentation. */
+:is(.button, .theme-toggle, .copy-link, .nav-link, .demo-tab, .demo-switch) {
+  scale: 1;
+  transition: scale .35s var(--ease), background-color .25s ease, color .25s ease, border-color .25s ease, box-shadow .3s ease;
+  touch-action: manipulation;
+}
+:is(.button, .theme-toggle, .copy-link, .nav-link, .demo-tab):active { scale: .96; transition-duration: 70ms; }
+.demo-switch:active { scale: .96; transition-duration: 70ms; }
+.theme-toggle svg { animation: theme-symbol .35s var(--ease) both; }
+
+
+@keyframes header-arrive { from { opacity: 0; transform: translateY(-.35rem); } }
+@keyframes content-arrive { from { opacity: 0; transform: translateY(.7rem); } }
+@keyframes preview-arrive { from { opacity: 0; transform: translateY(1rem) scale(.985); } }
+@keyframes theme-symbol { from { opacity: 0; transform: rotate(-35deg) scale(.8); } }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  :is(.button, .theme-toggle, .copy-link, .nav-link, .demo-tab, .demo-switch):active { scale: 1; }
+}
