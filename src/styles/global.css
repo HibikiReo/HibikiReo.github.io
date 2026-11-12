@@ -149,6 +149,9 @@ h2 { font-size: clamp(1.65rem, 2.5vw, 3.5rem); font-weight: 500; line-height: 1.
 .footer-bottom { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; font-size: .625rem; color: var(--ink-3); }
 .footer-note { display: flex; align-items: center; gap: .75rem; }
 .footer-motif { width: 2.7rem; height: 1.1rem; opacity: .5; }
+.footer-contact { display: flex; align-items: center; flex-wrap: wrap; gap: 0 .5rem; margin-top: 1rem; font-size: .75rem; color: var(--ink-2); }
+.footer-contact a { display: inline-flex; align-items: center; min-height: 2.75rem; text-decoration: underline; text-underline-offset: .2em; }
+.footer-contact a:hover { color: var(--accent); }
 
 .toast { position: fixed; left: 50%; bottom: 1.5rem; z-index: 60; width: max-content; max-width: calc(100% - 2rem); padding: .9rem 1.3rem; border: 1px solid var(--rule); border-radius: 999px; background: var(--panel-glass); color: var(--ink-2); font-size: .8125rem; text-align: center; box-shadow: var(--shadow-sheet); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); opacity: 0; translate: -50% 1rem; pointer-events: none; transition: opacity .25s, translate .35s var(--ease); }
 .toast.is-visible { opacity: 1; translate: -50% 0; }
