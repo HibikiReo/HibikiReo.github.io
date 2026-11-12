@@ -46,6 +46,14 @@ npm run preview
 
 构建时先运行 Astro 类型检查，再把静态站点输出到 `dist/`。可以部署到 Cloudflare Pages，也可以用 Nginx 托管。
 
+## GitHub Pages 部署
+
+站点地址为 https://ayayumi.github.io/，中文首页为 https://ayayumi.github.io/zh/。
+
+`.github/workflows/deploy.yml` 在推送到 `main` 分支时自动部署，也可以在 GitHub Actions 页面手动运行。工作流使用 Node.js 24，执行 `npm ci` 和 `npm run build`，再将 `dist/` 发布到 GitHub Pages；构建产物不提交到仓库。
+
+仓库的 Settings → Pages → Source 设置为 GitHub Actions。此仓库使用根路径，不需要配置 `base`。
+
 ## 内容和源码位置
 
 - `src/data/content.ts`：维护文章。文章正文按章节组织，章节里有段落、代码块，也可以插入主题预览或完整官网预览链接。
